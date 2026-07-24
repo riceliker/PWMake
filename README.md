@@ -1,7 +1,22 @@
-# PWBuild
-The C/C++ Program Build System. It is Lite, Simple, Fast. You just only use Python to create PWBuild.py 
-*No spend fuck time to make program* that's why I will create it.
-1. Fast
-  Only few minute to write PWBuild.py and never write any file in code.
-2. Simple
-  The simple language Python.
+# PWMake
+PWMake is a simple C/C++ program build system. Basic by Ninja.
+*No spend fuck time to make program.* Do you hate Cmake?
+If you are hate too, use it is a good idea. It's lite and easy.
+
+## How to use
+1. Firstly, you should have a ninja environment.
+2. Run the build.ninja in the root of the project.
+3. Write build.pwm to create you build task.
+
+## Example
+```pwm
+@compiler("clang")
+  .compiler_path("/opt/homebrew/opt/llvm")
+  .language_version("c++23")
+  .standard_library("libc++")
+
+@project("PWMake", "binary")
+  .header_folder += "src"
+  .header_files << recursion_folder("src", ".hpp")
+  .source_files << ergodic_folder("src", ".cpp")
+```

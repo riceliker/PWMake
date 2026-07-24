@@ -1,0 +1,14 @@
+# PWMake 0.1.0
+@compiler("clang")
+compiler_path("/opt/homebrew/opt/llvm@19")
+language_version("c++23")
+standard_library("libc++")
+;
+
+#%src_header = recursion_folder("src", ".hpp")
+#%src_source = ergodic_folder("src", ".cpp")
+
+#@project("PWMake", "binary")
+#header_files += %src_header
+#source_files += %src_source
+#;
