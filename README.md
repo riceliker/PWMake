@@ -11,16 +11,16 @@ If you are hate too, use it is a good idea. It's lite and easy.
 ## Example
 ```pwm
 @compiler("clang")
-  .compiler_path("/opt/homebrew/opt/llvm")
-  .language_version("c++23")
-  .standard_library("libc++")
+  compiler_path("/opt/homebrew/opt/llvm")
+  language_version("c++23")
+  standard_library("libc++")
 ;
 
 @set("Source")
-ergodic_folder("src", ".cpp")
+  ergodic_folder("src", ".cpp")
 ;
 
 @project("PWMake", "binary")
-  .source_files("Source")
+  source_files("Source")
 ;
 ```
