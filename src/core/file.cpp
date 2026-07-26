@@ -5,7 +5,7 @@
 #include <iostream>
 #include <fstream>
 
-namespace PWMake 
+namespace PWMake::Core
 {
     std::vector<std::string> GetTextLinesInFile(std::string path)
     {
@@ -35,7 +35,7 @@ namespace PWMake
         return file_lines;
     }
 
-    void CreateFileInPath(const std::vector<std::string>* const move_text_line, std::string file_path)
+    void CreateFileInPath(std::vector<std::string> text_line, std::string file_path)
     {
         std::ofstream file(file_path);
 
@@ -46,7 +46,7 @@ namespace PWMake
         }
 
         int line_index = 0;
-        for (const auto& line: *move_text_line)
+        for (const auto& line: text_line)
         {   
             file << line << std::endl;
             line_index += 1;

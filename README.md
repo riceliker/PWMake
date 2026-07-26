@@ -14,9 +14,13 @@ If you are hate too, use it is a good idea. It's lite and easy.
   .compiler_path("/opt/homebrew/opt/llvm")
   .language_version("c++23")
   .standard_library("libc++")
+;
+
+@set("Source")
+ergodic_folder("src", ".cpp")
+;
 
 @project("PWMake", "binary")
-  .header_folder += "src"
-  .header_files << recursion_folder("src", ".hpp")
-  .source_files << ergodic_folder("src", ".cpp")
+  .source_files("Source")
+;
 ```

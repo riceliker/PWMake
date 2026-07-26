@@ -1,11 +1,23 @@
 #include "core/mod.hpp"
 #include <string>
+#include <vector>
 
-int main()
+int main(int argc, char** argv)
 {
-    auto file = PWMake::GetTextLinesInFile("./build.pwm");
-    auto out = PWMake::NinjaFile();
-    auto lexer = PWMake::Lexer(file);
-    out.AddCompiler(lexer.compiler[0]);
-    PWMake::CreateFileInPath(out.ptr, "./build/build.ninja");
+    // auto args = std::span(argv, argc);
+    // std::vector<std::string> param;
+    // for (auto arg : args)
+    // {
+    //     param.push_back(std::string(arg));
+    // }
+
+    // auto input = PWMake::CLI::Input(param);
+    // input.OutputAbout();
+
+    auto file = PWMake::Core::GetTextLinesInFile("./build.pwm");
+    auto lexer = PWMake::Core::Lexer(file);
+    auto out = PWMake::Core::NinjaFile();
+    out.AddCompiler(lexer.compiler);
+    PWMake::Core::CreateFileInPath(out.AsFile(), "./build/build.ninja");
+    
 }

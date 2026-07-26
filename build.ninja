@@ -9,15 +9,12 @@ target_bin = ./build/app
 cxxflags = -std=c++23 -stdlib=libc++ -Wall -Wextra -g -O0
 ldflags = -stdlib=libc++
 
-# 2. 规则1：编译 .cppm 模块接口文件
-rule mod_compile
-  command = $clangxx $cxxflags -c $in -o $out
-  description = Build module interface $in
-
 # 3. 规则2：编译普通 .cpp 源码
 rule src_compile
-  command = $clangxx $cxxflags -c $in -o $out
+  command = $clangxx $cxxflags -c $in -o $out -MD -MF $out.d
   description = Build source $in
+  depfile = $out.d
+  deps = gcc
 
 # 4. 规则3：链接所有obj生成可执行程序
 rule link_bin
@@ -29,14 +26,16 @@ rule clean
   command = rm -rf $mod_cache $obj_dir $target_bin
   description = Clean all build artifacts
 
-# --------------------------
-# 批量定义文件编译任务
-# --------------------------
-# 模块接口文件
-build $obj_dir/main.o: src_compile src/main.cpp | src/core/mod.hpp
-build $obj_dir/file.o: src_compile src/core/file.cpp | src/core/mod.hpp
-build $obj_dir/ninja.o: src_compile src/core/ninja.cpp | src/core/mod.hpp
-build $obj_dir/lexer.o: src_compile src/core/lexer.cpp | src/core/mod.hpp
+
+build $obj_dir/main.o: src_compile src/main.cpp 
+
+build $obj_dir/file.o: src_compile src/core/file.cpp
+build $obj_dir/ninja.o: src_compile src/core/ninja.cpp
+build $obj_dir/lexer.o: src_compile src/core/lexer.cpp
+build $obj_dir/function.o: src_compile src/core/function.cpp
+build $obj_dir/transform.o: src_compile src/core/transform.cpp
+
+build $obj_dir/input.o: src_compile src/cli/input.cpp
 
 
 # 普通源码文件
@@ -46,7 +45,7 @@ build $obj_dir/lexer.o: src_compile src/core/lexer.cpp | src/core/mod.hpp
 
 
 # 链接最终程序
-build $target_bin: link_bin $obj_dir/main.o $obj_dir/file.o $obj_dir/ninja.o $obj_dir/lexer.o
+build $target_bin: link_bin $obj_dir/main.o $obj_dir/file.o $obj_dir/ninja.o $obj_dir/lexer.o $obj_dir/input.o $obj_dir/function.o $obj_dir/transform.o
 
 # 伪目标：默认执行编译链接
 default $target_bin

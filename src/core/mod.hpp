@@ -1,52 +1,65 @@
-
+#pragma once
 #include <string>
+#include <unordered_map>
 #include <vector>
 
-namespace PWMake 
+namespace PWMake::Core 
 {
-    std::vector<std::string> GetTextLinesInFile(std::string path);
-    void CreateFileInPath(const std::vector<std::string>* const move_text_line, std::string folder_path);
-    std::vector<std::string> SearchFileNameInFolder(std::string folder_path, std::string extension);
-
+    // Global API
     struct CompilerInfo
     {
-        std::string compiler_name;
         std::string compiler_path;
-        std::string language_version;
+        std::string standard_language;
         std::string standard_library;
+        bool is_warning;
+        bool is_extra_warning;
+        bool is_debug;
     };
 
-    struct PWMListInfo
+    struct ProjectInfo
     {
-
+        std::string project_name;
+        std::string project_type;
+        std::vector<std::string> project_header;
     };
+    
+    // file.cpp
+    std::vector<std::string> GetTextLinesInFile(std::string path);
+    void CreateFileInPath(std::vector<std::string> move_text_line, std::string folder_path);
+    std::vector<std::string> SearchFileNameInFolder(std::string folder_path, std::string extension);
 
-    class PWMFunc
-    {
-    public:
-        std::string name;
-        std::vector<std::string> param;
-        PWMFunc(std::string text, int line);
-    };
+    // function.cpp
+    std::tuple<std::string, std::vector<std::string>> Function(std::string text);
 
+    // lexer.cpp
     class Lexer
     {
     private:
-        std::vector<std::vector<std::string>> DivideGroup(std::vector<std::string> lines);
+        void DivideGroup(std::vector<std::string> line, int pc);
+        std::unordered_map<std::string, bool> bool_variable;
+        std::unordered_map<std::string, std::string> string_variable;
+        std::unordered_map<std::string, std::vector<std::string>> files_variable;
     public:
-        std::vector<CompilerInfo> compiler;
         Lexer(std::vector<std::string> lines);
+
+        CompilerInfo compiler;
         
     };
+    
 
+    // transform.cpp
+    CompilerInfo CompilerGroup(std::vector<std::string> group);
+    
+    // ninja.cpp
     class NinjaFile
     {
+    private:
+        std::vector<std::string> data;
     public:
-        std::vector<std::string>* ptr;
-    
         NinjaFile();
+        std::vector<std::string> AsFile();
         void AddCompiler(CompilerInfo info);
     };
 
-    CompilerInfo CompilerGroup(std::string text, int line);
+    
 }
