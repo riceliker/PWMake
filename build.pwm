@@ -1,17 +1,17 @@
 # PWMake 0.1.0
 
 @compiler("/opt/homebrew/opt/llvm@19/bin/clang++")
-compiler_standard_language!("c++23")
-compiler_standard_library!("libc++")
-compiler_warning()
-compiler_extra_warning()
-compiler_debug()
+    compiler_standard_language!("c++23")
+    compiler_standard_library!("libc++")
+    compiler_warning()
+    compiler_extra_warning()
+    compiler_debug()
 ;
 
 $prints("hello world")
-$bool(a, true)
-$bool(b, false)
-$or(c, a, b)
+    $bool(a, true)
+    $bool(b, false)
+    $or(c, a, b)
 $printb(c)
 
 @files("source_file")
