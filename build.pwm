@@ -8,6 +8,12 @@ compiler_extra_warning()
 compiler_debug()
 ;
 
+$prints("hello world")
+$bool(a, true)
+$bool(b, false)
+$or(c, a, b)
+$printb(c)
+
 @files("source_file")
 add_file?("./src/main.cpp")
 foreach_file?("./src", ".cpp")

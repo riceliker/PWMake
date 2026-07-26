@@ -18,15 +18,15 @@ namespace PWMake::Core
             auto [name, params] = Function(line);
             if (name == "@compiler")
             {
-                info.compiler_path = params[0];
+                info.compiler_path = params->at(0);
             }
             if (name == "compiler_standard_language")
             {
-                info.standard_language = params[0];
+                info.standard_language = params->at(0);
             }
             if (name == "compiler_standard_library")
             {
-                info.standard_library = params[0];
+                info.standard_library = params->at(0);
             }
             if (name == "compiler_warning")
             {

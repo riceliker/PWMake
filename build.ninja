@@ -3,7 +3,7 @@ llvm_root = /opt/homebrew/opt/llvm@19
 clangxx = $llvm_root/bin/clang++
 mod_cache = ./build/mods
 obj_dir = ./build/obj
-target_bin = ./build/app
+target_bin = ./build/PWMake
 
 # 编译通用参数（C++23 Module + libc++ 修复 libc++.modules.json 警告）
 cxxflags = -std=c++23 -stdlib=libc++ -Wall -Wextra -g -O0
@@ -32,7 +32,7 @@ build $obj_dir/main.o: src_compile src/main.cpp
 build $obj_dir/file.o: src_compile src/core/file.cpp
 build $obj_dir/ninja.o: src_compile src/core/ninja.cpp
 build $obj_dir/lexer.o: src_compile src/core/lexer.cpp
-build $obj_dir/function.o: src_compile src/core/function.cpp
+build $obj_dir/utils.o: src_compile src/core/utils.cpp
 build $obj_dir/transform.o: src_compile src/core/transform.cpp
 
 build $obj_dir/input.o: src_compile src/cli/input.cpp
@@ -45,7 +45,7 @@ build $obj_dir/input.o: src_compile src/cli/input.cpp
 
 
 # 链接最终程序
-build $target_bin: link_bin $obj_dir/main.o $obj_dir/file.o $obj_dir/ninja.o $obj_dir/lexer.o $obj_dir/input.o $obj_dir/function.o $obj_dir/transform.o
+build $target_bin: link_bin $obj_dir/main.o $obj_dir/file.o $obj_dir/ninja.o $obj_dir/lexer.o $obj_dir/input.o $obj_dir/utils.o $obj_dir/transform.o
 
 # 伪目标：默认执行编译链接
 default $target_bin

@@ -22,20 +22,26 @@ namespace PWMake::Core
         std::string project_type;
         std::vector<std::string> project_header;
     };
+
+    // utils.cpp
+    std::tuple<std::string, std::unique_ptr<std::vector<std::string>>> Function(std::string text);
+    std::vector<std::string> CatchGroup(std::vector<std::string> line, int pc);
+    std::string GetString(std::unordered_map<std::string, std::string> map, std::string input);
+    bool GetBool(std::unordered_map<std::string, bool> map, std::string input);
     
     // file.cpp
     std::vector<std::string> GetTextLinesInFile(std::string path);
     void CreateFileInPath(std::vector<std::string> move_text_line, std::string folder_path);
     std::vector<std::string> SearchFileNameInFolder(std::string folder_path, std::string extension);
 
-    // function.cpp
-    std::tuple<std::string, std::vector<std::string>> Function(std::string text);
+   
 
     // lexer.cpp
     class Lexer
     {
     private:
         void DivideGroup(std::vector<std::string> line, int pc);
+        void RegistryVariable(std::vector<std::string> line, int pc);
         std::unordered_map<std::string, bool> bool_variable;
         std::unordered_map<std::string, std::string> string_variable;
         std::unordered_map<std::string, std::vector<std::string>> files_variable;
