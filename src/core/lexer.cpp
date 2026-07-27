@@ -3,6 +3,7 @@
 #include <memory>
 #include <string>
 #include <vector>
+#include <stack>
 
 namespace PWMake::Core
 {    
@@ -57,38 +58,47 @@ namespace PWMake::Core
         if (name == "$string")
         {
             CheckParam(params, 2, lines, pc);
-            std::string a = GetString(this->string_variable,params->at(1));
+            std::string a = GetString(this->string_variable,params->at(1), lines, pc);
             this->string_variable.insert({params->at(0), a});
             return;
         }
         else if (name == "$same") 
         {
             CheckParam(params, 3, lines, pc);
-            std::string a = GetString(this->string_variable,params->at(1));
-            std::string b = GetString(this->string_variable,params->at(2));
+            std::string a = GetString(this->string_variable,params->at(1), lines, pc);
+            std::string b = GetString(this->string_variable,params->at(2), lines, pc);
             this->bool_variable.insert({params->at(0), a==b});
             return;
         }
         else if (name == "$in") 
         {
             CheckParam(params, 3, lines, pc);
-            std::string a = GetString(this->string_variable,params->at(1));
-            std::string b = GetString(this->string_variable,params->at(2));
+            std::string a = GetString(this->string_variable,params->at(1), lines, pc);
+            std::string b = GetString(this->string_variable,params->at(2), lines, pc);
             this->bool_variable.insert({params->at(0), a.find(b) != std::string::npos});
             return;
         }
+        else if (name == "$add")
+        {
+            CheckParam(params, 3, lines, pc);
+            std::string a = GetString(this->string_variable,params->at(1), lines, pc);
+            std::string b = GetString(this->string_variable,params->at(2), lines, pc);
+            this->string_variable.insert({params->at(0), a + b});
+            return;
+        }
+        
 
         if (name == "$prints") 
         {
             CheckParam(params, 1, lines, pc);
-            std::string a = GetString(this->string_variable,params->at(0));
+            std::string a = GetString(this->string_variable,params->at(0), lines, pc);
             std::printf("%s\n", a.c_str());
             return;
         }
         else if (name == "$printb")
         {
             CheckParam(params, 1, lines, pc);
-            bool a = GetBool(this->bool_variable, params->at(0));
+            bool a = GetBool(this->bool_variable, params->at(0), lines, pc);
             std::printf("%s\n", a?"true":"false");
             return;
         }
@@ -96,38 +106,38 @@ namespace PWMake::Core
         if (name == "$bool")
         {
             CheckParam(params, 2, lines, pc);
-            bool a = GetBool(this->bool_variable, params->at(1));
+            bool a = GetBool(this->bool_variable, params->at(1), lines, pc);
             this->bool_variable.insert({params->at(0), a});
             return;
         }
         else if (name == "$not") 
         {
             CheckParam(params, 2, lines, pc);
-            bool a = GetBool(this->bool_variable, params->at(1));
+            bool a = GetBool(this->bool_variable, params->at(1), lines, pc);
             this->bool_variable.insert({params->at(0), !a});
             return;
         }
         else if (name == "$and") 
         {
             CheckParam(params, 3, lines, pc);
-            bool a = GetBool(this->bool_variable, params->at(1));
-            bool b = GetBool(this->bool_variable, params->at(2));
+            bool a = GetBool(this->bool_variable, params->at(1), lines, pc);
+            bool b = GetBool(this->bool_variable, params->at(2), lines, pc);
             this->bool_variable.insert({params->at(0), a&&b});
             return;
         }
         else if (name == "$or") 
         {
             CheckParam(params, 3, lines, pc);
-            bool a = GetBool(this->bool_variable, params->at(1));
-            bool b = GetBool(this->bool_variable, params->at(2));
+            bool a = GetBool(this->bool_variable, params->at(1), lines, pc);
+            bool b = GetBool(this->bool_variable, params->at(2), lines, pc);
             this->bool_variable.insert({params->at(0), a||b});
             return;
         }
         else if(name == "$equal")
         {
             CheckParam(params, 3, lines, pc);
-            bool a = GetBool(this->bool_variable, params->at(1));
-            bool b = GetBool(this->bool_variable, params->at(2));
+            bool a = GetBool(this->bool_variable, params->at(1), lines, pc);
+            bool b = GetBool(this->bool_variable, params->at(2), lines, pc);
             this->bool_variable.insert({params->at(0), a==b});
             return;
         }
@@ -137,9 +147,65 @@ namespace PWMake::Core
         std::printf("%d | %s\n", pc+1, lines[pc].c_str());
         std::exit(1);
     }
+
+
+    void Lexer::ForkControl(std::unique_ptr<std::stack<bool>>& if_stack, std::vector<std::string> lines, int pc)
+    {
+        auto line = lines[pc];
+        size_t start = 0;
+        while (start < line.size() && std::isspace(static_cast<unsigned char>(line[start])))
+            start++;
+        line.erase(0, start);
+        auto [name, param] = Function(line);
+        auto params = std::move(param);
+        if (name == ":if")
+        {
+            CheckParam(params, 1, lines, pc);
+            bool value = GetBool(this->bool_variable, params->at(0), lines, pc);
+            if_stack->push(value);
+            pc += 1;
+        }
+        else if (name == ":else") 
+        {
+            CheckParam(params, 0, lines, pc);
+            bool temp = if_stack->top();
+            if_stack->pop();
+            if_stack->push(!temp);
+            pc += 1;
+        }
+        else if (name == ":endif") 
+        {
+            CheckParam(params, 0, lines, pc);
+            if (!if_stack->empty())
+            {
+                if_stack->pop();  
+            }  
+            pc += 1;
+        }
+        else 
+        {
+            std::printf("\033[31m" "Error:" "\033[0m" " Error If Structure!\n");
+            std::printf("In build.pwm:%d\n", pc+1);
+            std::printf("%d | %s\n", pc+1, lines[pc].c_str());
+            std::exit(1);
+        }
+    }
+    static inline bool IsAllTrue(const std::unique_ptr<std::stack<bool>>& src)
+    {
+        bool res = true;
+        std::stack<bool> tmp = *src;
+        while (!tmp.empty())
+        {
+            bool val = tmp.top();
+            res = val && res;
+            tmp.pop();
+        }
+        return res;
+    }
     Lexer::Lexer(std::vector<std::string> lines)
     {
         size_t pc = 0;
+        std::unique_ptr<std::stack<bool>> if_stack(new std::stack<bool>());
         while (pc != lines.size() - 1)
         {
             auto line = lines[pc];
@@ -160,12 +226,19 @@ namespace PWMake::Core
             break;
             case '@':
             {
-                this->DivideGroup(lines, pc);
+                if (IsAllTrue(if_stack))
+                    this->DivideGroup(lines, pc);
             }
             break;
             case '$':
             {
-                this->RegistryVariable(lines, pc);
+                if (IsAllTrue(if_stack))
+                    this->RegistryVariable(lines, pc);
+            }
+            break;
+            case ':':
+            {
+                this->ForkControl(if_stack, lines, pc);
             }
             break;
             default:

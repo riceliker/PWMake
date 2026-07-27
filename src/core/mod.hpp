@@ -1,7 +1,10 @@
 #pragma once
+#include <cstddef>
 #include <string>
+#include <tuple>
 #include <unordered_map>
 #include <vector>
+#include <stack>
 
 namespace PWMake::Core 
 {
@@ -26,8 +29,8 @@ namespace PWMake::Core
     // utils.cpp
     std::tuple<std::string, std::unique_ptr<std::vector<std::string>>> Function(std::string text);
     std::vector<std::string> CatchGroup(std::vector<std::string> line, int pc);
-    std::string GetString(std::unordered_map<std::string, std::string> map, std::string input);
-    bool GetBool(std::unordered_map<std::string, bool> map, std::string input);
+    std::string GetString(std::unordered_map<std::string, std::string> map, std::string input, std::vector<std::string> lines, int pc);
+    bool GetBool(std::unordered_map<std::string, bool> map, std::string input,  std::vector<std::string> lines, int pc);
     
     // file.cpp
     std::vector<std::string> GetTextLinesInFile(std::string path);
@@ -37,11 +40,18 @@ namespace PWMake::Core
    
 
     // lexer.cpp
+    struct IfFrame 
+    {
+        int cond_jump;
+        int exit_jump;
+        bool met_else;
+    };
     class Lexer
     {
     private:
         void DivideGroup(std::vector<std::string> line, int pc);
         void RegistryVariable(std::vector<std::string> line, int pc);
+        void ForkControl(std::unique_ptr<std::stack<bool>>& if_stack, std::vector<std::string> lines, int pc);
         std::unordered_map<std::string, bool> bool_variable;
         std::unordered_map<std::string, std::string> string_variable;
         std::unordered_map<std::string, std::vector<std::string>> files_variable;

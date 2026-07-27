@@ -5,19 +5,19 @@ If you are hate too, use it is a good idea. It's lite and easy.
 
 ## How to use
 1. Firstly, you should have a ninja environment.
-2. Run the build.ninja in the root of the project.
+2. Use ninja to build PWMake.
 3. Write build.pwm to create you build task.
+4. Use PWMAke to build your task.
 
 ## Example
 ```pwm
-@compiler("clang")
-  compiler_path("/opt/homebrew/opt/llvm")
+@compiler("/opt/homebrew/opt/llvm@19/bin/clang++")
   language_version("c++23")
   standard_library("libc++")
 ;
 
-@set("Source")
-  ergodic_folder("src", ".cpp")
+@files("Source")
+  foreach_folder("src", ".cpp")
 ;
 
 @project("PWMake", "binary")

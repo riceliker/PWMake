@@ -5,7 +5,6 @@
 #include <tuple>
 #include <unordered_map>
 #include <vector>
-#include <ranges>
 
 #if defined(__unix__)
 std::string _platform = "unix";
@@ -39,8 +38,6 @@ namespace PWMake::Core
         std::unique_ptr<std::vector<std::string>> params(new std::vector<std::string>());
 
         bool is_record_name = true;
-        bool is_record_param = false;
-        int param_index = -1;
         std::string param = "";
         for(const char& word: text)
         {
@@ -75,10 +72,12 @@ namespace PWMake::Core
         return std::tuple(name, std::move(params));
     }
 
-    std::string GetString(std::unordered_map<std::string, std::string> map, std::string _input)
+    std::string GetString(std::unordered_map<std::string, std::string> map, std::string input, std::vector<std::string> lines, int pc)
     {
-        auto temp = _input | std::views::drop_while(isspace);
-        std::string input = std::string(temp.begin(), temp.end());
+        size_t start = 0;
+        while (start < input.size() && std::isspace(static_cast<unsigned char>(input[start])))
+            start++;
+        input.erase(0, start);
         // special string
         if (input == "__platform__")
         {
@@ -101,16 +100,20 @@ namespace PWMake::Core
             }
             else 
             {
-                std::printf("\033[31m" "Error:" "\033[0m" " The Variable String Is Not Define!\n");
+                std::printf("\033[31m" "Error:" "\033[0m" " The String Variable(%s) Is Not Define!\n", input.c_str());
+                std::printf("In build.pwm:%d\n", pc+1);
+                std::printf("%d | %s\n", pc+1, lines[pc].c_str());
                 std::exit(1);
             }
         }
     }
 
-    bool GetBool(std::unordered_map<std::string, bool> map, std::string _input)
+    bool GetBool(std::unordered_map<std::string, bool> map, std::string input, std::vector<std::string> lines, int pc)
     {
-        auto temp = _input | std::views::drop_while(isspace);
-        std::string input = std::string(temp.begin(), temp.end());
+        size_t start = 0;
+        while (start < input.size() && std::isspace(static_cast<unsigned char>(input[start])))
+            start++;
+        input.erase(0, start);
         if (input == "true" || input == "false")
         {
             return input == "true" ? true : false;
@@ -121,7 +124,9 @@ namespace PWMake::Core
         }
         else 
         {
-            std::printf("\033[31m" "Error:" "\033[0m" " The Bool Variable Is Not Define!\n");
+            std::printf("\033[31m" "Error:" "\033[0m" " The Bool Variable(%s) Is Not Define!\n", input.c_str());
+            std::printf("In build.pwm:%d\n", pc+1);
+            std::printf("%d | %s\n", pc+1, lines[pc].c_str());
             std::exit(1);
         }
     }
