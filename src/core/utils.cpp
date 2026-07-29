@@ -32,6 +32,17 @@ std::string _arch = "arm64";
 
 namespace PWMake::Core 
 {
+    void CheckParam(std::unique_ptr<std::vector<std::string>>& params, int count, std::vector<std::string> line, int pc)
+    {
+        if (params->size() != count)
+        {
+            std::printf("\033[31m" "Error:" "\033[0m" " Defined A Variable Must Need Two Parameters!\n");
+            std::printf("In build.pwm:%d\n", pc+1);
+            std::printf("%d | %s\n", pc+1, line[pc].c_str());
+            std::exit(1);
+        }
+    }
+
     std::tuple<std::string, std::unique_ptr<std::vector<std::string>>> Function(std::string text)
     {
         std::string name = "";

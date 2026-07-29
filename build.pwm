@@ -1,4 +1,14 @@
-@files("test")
-    foreach_folder("./build/obj", ".o")
-    print("test:")
+@compiler("/opt/homebrew/opt/llvm@19/bin/clang++")
+  language_version("c++23")
+  standard_library("libc++")
+;
+
+@files("Source")
+  foreach_folder("src/core", ".cpp")
+  foreach_folder("src/cli", ".cpp")
+  add_file("src/main.cpp")
+;
+
+@project("PWMake", "binary")
+  source_files("Source")
 ;

@@ -1,4 +1,5 @@
 #include "mod.hpp"
+#include <filesystem>
 #include <string>
 #include <vector>
 
@@ -7,14 +8,7 @@ namespace PWMake::Core
     NinjaFile::NinjaFile()
     {
         this->data = std::vector<std::string>();
-        this->data.push_back("# ===== The Template File =====");
-        this->data.push_back("mod_cache = ./build/mods");
-        this->data.push_back("obj_dir = ./build/obj");
-        this->data.push_back("target_bin = ./build/app");
-
-        this->data.push_back("rule clean");
-        this->data.push_back("  command = rm -rf $mod_cache $obj_dir $target_bin");
-        this->data.push_back("  description = Clean template file ");
+        this->data.push_back("# PWMake 1.0");
     }
 
     std::vector<std::string> NinjaFile::AsFile()
@@ -51,8 +45,6 @@ namespace PWMake::Core
             compiler_flag += " -Wextra";
         }
         
-
-        this->data.push_back("# ===== Compile Task =====");
         this->data.push_back(compiler_flag);
         this->data.push_back("rule compile");
         this->data.push_back("  command = $compiler_path $compiler_flags -c $in -o $out -MD -MF $out.d");
@@ -65,11 +57,30 @@ namespace PWMake::Core
         {
             link_flags += " -stdlib=" + info.standard_library;
         }
-            
-        this->data.push_back("# ===== Link Task =====");
+        
+        this->data.push_back(link_flags);
         this->data.push_back("rule link");
-        this->data.push_back("  command = $compiler_path $ldflags $in -o $out");
+        this->data.push_back("  command = $compiler_path $link_flags $in -o $out");
+    }
 
+    void NinjaFile::AddSource(ProjectInfo info)
+    {
+        this->data.push_back("# ===== Make Object =====");
+        this->data.push_back("obj = ./build/obj");
+        this->data.push_back("bin = ./build/" + info.project_name);
+        std::string links = "build $bin: link ";
+        for (const auto& file: info.source_files)
+        {
+            std::filesystem::path out = file;
+            out.replace_extension(".o");
+            std::string out_file = "$obj/" + info.project_name + "/" + out.string();
+            this->data.push_back(
+                "build " + out_file + ": " + "compile " + file.string()
+            );
+            links.append(out_file + " ");
+        }
+        this->data.push_back(links);
+        this->data.push_back("default $bin");
     }
 
 }

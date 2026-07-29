@@ -18,6 +18,7 @@ int main(int argc, char** argv)
     auto lexer = PWMake::Core::Lexer(file);
     auto out = PWMake::Core::NinjaFile();
     out.AddCompiler(lexer.compiler);
-    PWMake::Core::CreateFileInPath(out.AsFile(), "./build/build.ninja");
+    out.AddSource(lexer.project[0]);
+    PWMake::Core::CreateFileInPath(out.AsFile(), "./build.ninja");
     
 }

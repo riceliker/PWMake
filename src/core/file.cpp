@@ -1,3 +1,7 @@
+/*
+ * file.cpp: <build.pwm> -> file -> lexer
+ * Any file operaction will be run here.
+ */
 #include "mod.hpp"
 
 #include <string>
@@ -29,6 +33,10 @@ namespace PWMake::Core
                 line += get_line[get_line.size()-1];
             else 
                 line = get_line;
+            size_t start = 0;
+            while (start < line.size() && std::isspace(static_cast<unsigned char>(line[start])))
+                start++;
+            line.erase(0, start);
             file_lines.push_back(line);
         }
         file.close();
@@ -55,9 +63,9 @@ namespace PWMake::Core
         file.close();
     }
     
-    std::vector<std::string> SearchFileInFolder(std::string folder_path, std::string extension)
+    std::vector<std::filesystem::path> SearchFileInFolder(std::string folder_path, std::string extension)
     {
-        auto files = std::vector<std::string>();
+        auto files = std::vector<std::filesystem::path>();
         if (!std::filesystem::exists(folder_path))
         {
             std::printf("\033[31m" "Error:" "\033[0m" " The Path(%s) Is No Found!\n", folder_path.c_str());
@@ -76,15 +84,15 @@ namespace PWMake::Core
             std::string file_extension = file.path().extension().string();
             if (file_extension == extension)
             {
-                files.push_back(file_path);
+                files.push_back(file.path());
             }
         }
         return files;
     }
 
-    std::vector<std::string> RecursionFileInFolder(std::string folder_path, std::string extension)
+    std::vector<std::filesystem::path> RecursionFileInFolder(std::string folder_path, std::string extension)
     {
-        auto files = std::vector<std::string>();
+        auto files = std::vector<std::filesystem::path>();
         if (!std::filesystem::exists(folder_path))
         {
             std::printf("\033[31m" "Error:" "\033[0m" " The Path(%s) Is No Found!\n", folder_path.c_str());
@@ -105,7 +113,7 @@ namespace PWMake::Core
                 std::string file_extension = file.extension().string();
                 if (file_extension == extension)
                 {
-                    files.push_back(file_path);
+                    files.push_back(file);
                 }
             }
         }
