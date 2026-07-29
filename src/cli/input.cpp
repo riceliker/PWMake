@@ -1,12 +1,13 @@
 #include "mod.hpp"
+#include <cstddef>
 
 namespace PWMake::CLI
-{
+{   
     Input::Input(std::vector<std::string> params)
     {
         if (params[0] == "--version")
         {
-            std::printf("1.0.0");
+            std::printf("0.1.0");
         }
         if (params[0] == "--about")
         {
@@ -27,5 +28,6 @@ namespace PWMake::CLI
         std::printf("   Command:");
         std::printf("   --version       Get PWMake Version.");
         std::printf("   --about         Get Infomation.");
+        
     }
 }

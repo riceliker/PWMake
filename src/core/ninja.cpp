@@ -8,7 +8,7 @@ namespace PWMake::Core
     NinjaFile::NinjaFile()
     {
         this->data = std::vector<std::string>();
-        this->data.push_back("# PWMake 1.0");
+        this->data.push_back("# PWMake 0.1.0");
     }
 
     std::vector<std::string> NinjaFile::AsFile()
@@ -32,6 +32,12 @@ namespace PWMake::Core
         {
             compiler_flag += " -stdlib=" + info.standard_library;
         }
+
+        for (const auto& header: info.header)
+        {
+            compiler_flag += " -I" + header + " ";
+        }
+
         if (info.is_debug)
         {
             compiler_flag += " -g -O0";
@@ -44,7 +50,7 @@ namespace PWMake::Core
         {
             compiler_flag += " -Wextra";
         }
-        
+
         this->data.push_back(compiler_flag);
         this->data.push_back("rule compile");
         this->data.push_back("  command = $compiler_path $compiler_flags -c $in -o $out -MD -MF $out.d");
@@ -78,6 +84,11 @@ namespace PWMake::Core
                 "build " + out_file + ": " + "compile " + file.string()
             );
             links.append(out_file + " ");
+        }
+
+        for (const auto& lib: info.library)
+        {
+            links.append(lib + " ");
         }
         this->data.push_back(links);
         this->data.push_back("default $bin");

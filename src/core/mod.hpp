@@ -18,6 +18,7 @@ namespace PWMake::Core
         bool is_warning;
         bool is_extra_warning;
         bool is_debug;
+        std::vector<std::string> header;
     };
 
     struct ProjectInfo
@@ -25,6 +26,7 @@ namespace PWMake::Core
         std::string project_name;
         std::string project_type;
         std::vector<std::filesystem::path> source_files;
+        std::vector<std::string> library;
     };
 
     // utils.cpp

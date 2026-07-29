@@ -1,0 +1,43 @@
+{
+  "name": "pwmake-syntax",
+  "version": "0.1.0",
+  "description": "Syntax highlighting for PWMake build config files (*.pwm)",
+  "license": "MIT",
+  "author": "Riceliker",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "engines": {
+    "vscode": "^1.80.0"
+  },
+  "displayName": "PWMake Syntax Highlight",
+  "categories": [
+    "Programming Languages"
+  ],
+  "contributes": {
+    "languages": [
+      {
+        "id": "pwmake",
+        "aliases": [
+          "PWMake",
+          "pwmake"
+        ],
+        "extensions": [
+          ".pwm"
+        ],
+        "configuration": "./language-configuration.json"
+      }
+    ],
+    "grammars": [
+      {
+        "language": "pwmake",
+        "scopeName": "source.pwmake",
+        "path": "./syntaxes/pwmake.tmLanguage.json"
+      }
+    ]
+  },
+  "keywords": [],
+  "devDependencies": {
+    "@vscode/vsce": "^3.9.2"
+  }
+}

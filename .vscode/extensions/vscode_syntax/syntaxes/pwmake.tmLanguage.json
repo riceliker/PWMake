@@ -1,0 +1,67 @@
+{
+  "$schema": "https://raw.githubusercontent.com/martinring/tmlanguage/master/tmlanguage.json",
+  "name": "PWMake",
+  "scopeName": "source.pwmake",
+  "fileTypes": ["pwm"],
+  "patterns": [
+    {
+      "name": "comment.line.number-sign.pwmake",
+      "match": "#.*$"
+    },
+
+    {
+      "name": "entity.name.namespace.pwmake",
+      "match": "@(compiler|files|libs|project)"
+    },
+    {
+      "name": "entity.name.namespace.pwmake",
+      "match": ";"
+    },
+
+    {
+      "name": "entity.name.function.pwmake",
+      "match": "[a-zA-Z_][a-zA-Z0-9_]*(?=\\()",
+      "captures": {}
+    },
+
+    {
+      "begin": "\\(",
+      "end": "\\)",
+      "patterns": [
+        {
+          "name": "variable.other.readwrite.pwmake",
+          "match": "[a-zA-Z_][a-zA-Z0-9_]*"
+        },
+        {
+          "name": "string.quoted.double.pwmake",
+          "begin": "\"",
+          "end": "\"",
+          "patterns": [
+            {
+              "name": "variable.other.embedded.pwmake",
+              "match": "\\$[a-zA-Z0-9_]+"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "name": "keyword.control.pwmake",
+      "match": "\\b(false|true)\\b"
+    },
+
+    {
+      "name": "keyword.control.flow.pwmake",
+      "match": "\\:(if|else|fi)"
+    },
+
+    {
+      "name": "variable.other.constant.pwmake",
+      "match": "\\$(string|same|in|add|prints|printb|bool|not|and|or|equal|)"
+    },
+    {
+      "name": "string.unquoted.path.pwmake",
+      "match": "\\./[\\w/\\-_.]+"
+    }
+  ]
+}

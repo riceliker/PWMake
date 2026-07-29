@@ -47,6 +47,11 @@ namespace PWMake::Core
             {
                 info.is_debug = true;
             }
+            else if (name == "library_header")
+            {
+                CheckParam(params, 1, lines, pc);
+                info.header.push_back(GetStringLite(params->at(0)));
+            }
             else 
             {
                 std::printf("\033[31m" "Error:" "\033[0m" " Unknow Function Name(%s) In Compiler Group!\n", name.c_str());
@@ -86,6 +91,11 @@ namespace PWMake::Core
                     std::printf("%d | %s\n", pc+1, lines[pc].c_str());
                     std::exit(1);
                 }
+            }
+            else if (name == "add_library")
+            {
+                CheckParam(params, 1, lines, pc);
+                info.library.push_back(GetStringLite(params->at(0)));
             }
             else 
             {

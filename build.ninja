@@ -1,7 +1,7 @@
-# PWMake 1.0
+# PWMake 0.1.0
 # ===== Compiler =====
 compiler_path = /opt/homebrew/opt/llvm@19/bin/clang++
-compiler_flags = -std=c++23 -stdlib=libc++
+compiler_flags = -std=c++23 -stdlib=libc++ -I/opt/homebrew/include/SDL3  -g -O0
 rule compile
   command = $compiler_path $compiler_flags -c $in -o $out -MD -MF $out.d
   depfile = $out.d
@@ -20,5 +20,5 @@ build $obj/PWMake/src/core/transform.o: compile src/core/transform.cpp
 build $obj/PWMake/src/cli/input.o: compile src/cli/input.cpp
 build $obj/PWMake/src/cli/run.o: compile src/cli/run.cpp
 build $obj/PWMake/src/main.o: compile src/main.cpp
-build $bin: link $obj/PWMake/src/core/utils.o $obj/PWMake/src/core/lexer.o $obj/PWMake/src/core/ninja.o $obj/PWMake/src/core/file.o $obj/PWMake/src/core/transform.o $obj/PWMake/src/cli/input.o $obj/PWMake/src/cli/run.o $obj/PWMake/src/main.o 
+build $bin: link $obj/PWMake/src/core/utils.o $obj/PWMake/src/core/lexer.o $obj/PWMake/src/core/ninja.o $obj/PWMake/src/core/file.o $obj/PWMake/src/core/transform.o $obj/PWMake/src/cli/input.o $obj/PWMake/src/cli/run.o $obj/PWMake/src/main.o /opt/homebrew/lib/libSDL3.dylib 
 default $bin
