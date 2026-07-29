@@ -108,6 +108,19 @@ namespace PWMake::Core
         }
     }
 
+    std::string GetStringLite(std::string input)
+    {
+        size_t start = 0;
+            while (start < input.size() && std::isspace(static_cast<unsigned char>(input[start])))
+                start++;
+            input.erase(0, start);
+        if (input[0] == '"' && input[input.size()-1] == '"')
+        {
+            return input.substr(1, input.size()-2);
+        }
+        return input;
+    }
+
     bool GetBool(std::unordered_map<std::string, bool> map, std::string input, std::vector<std::string> lines, int pc)
     {
         size_t start = 0;

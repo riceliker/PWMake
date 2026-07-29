@@ -55,18 +55,58 @@ namespace PWMake::Core
         file.close();
     }
     
-    std::vector<std::string> SearchFileNameInFolder(std::string folder_path, std::string extension)
+    std::vector<std::string> SearchFileInFolder(std::string folder_path, std::string extension)
     {
         auto files = std::vector<std::string>();
+        if (!std::filesystem::exists(folder_path))
+        {
+            std::printf("\033[31m" "Error:" "\033[0m" " The Path(%s) Is No Found!\n", folder_path.c_str());
+            std::exit(1);
+        }
+        if (!std::filesystem::is_directory(folder_path))
+        {
+            std::printf("\033[31m" "Error:" "\033[0m" " The Path(%s) Is No A Folder!\n", folder_path.c_str());
+            std::exit(1);
+        }
         for (const auto& file: std::filesystem::directory_iterator(folder_path))
         {
-            if (file.is_regular_file())
+            if (!file.is_regular_file())
                 continue;
             std::string file_path = file.path().string();
             std::string file_extension = file.path().extension().string();
             if (file_extension == extension)
             {
                 files.push_back(file_path);
+            }
+        }
+        return files;
+    }
+
+    std::vector<std::string> RecursionFileInFolder(std::string folder_path, std::string extension)
+    {
+        auto files = std::vector<std::string>();
+        if (!std::filesystem::exists(folder_path))
+        {
+            std::printf("\033[31m" "Error:" "\033[0m" " The Path(%s) Is No Found!\n", folder_path.c_str());
+            std::exit(1);
+        }
+        if (!std::filesystem::is_directory(folder_path))
+        {
+            std::printf("\033[31m" "Error:" "\033[0m" " The Path(%s) Is No A Folder!\n", folder_path.c_str());
+            std::exit(1);
+        }
+        std::filesystem::path root = folder_path;
+        for (const auto& entry : std::filesystem::recursive_directory_iterator(root))
+        {
+            if (std::filesystem::is_regular_file(entry))
+            {
+                auto file = entry.path();
+                std::string file_path = file.string();
+                std::string file_extension = file.extension().string();
+                if (file_extension == extension)
+                {
+                    files.push_back(file_path);
+                }
             }
         }
         return files;

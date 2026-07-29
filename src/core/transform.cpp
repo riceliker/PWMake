@@ -44,4 +44,9 @@ namespace PWMake::Core
         return info;
     }
 
+    ProjectInfo ProjectGroup(std::vector<std::string> group)
+    {
+        
+    }
+
 }

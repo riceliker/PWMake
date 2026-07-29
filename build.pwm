@@ -1,1 +1,4 @@
-
+@files("test")
+    foreach_folder("./build/obj", ".o")
+    print("test:")
+;

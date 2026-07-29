@@ -1,5 +1,6 @@
 #include "mod.hpp"
 #include <cstddef>
+#include <cstdio>
 #include <memory>
 #include <string>
 #include <vector>
@@ -18,7 +19,7 @@ namespace PWMake::Core
         auto group = CatchGroup(lines, pc);
         if (name == "@files")
         {
-            
+            this->CreateFiles(group, lines, pc);
         }
         else if (name == "@compiler")
         {
@@ -26,7 +27,7 @@ namespace PWMake::Core
         }
         else if (name == "@project")
         {
-
+            this->project.push_back(ProjectGroup(group));
         }
         else 
         {
@@ -201,6 +202,91 @@ namespace PWMake::Core
             tmp.pop();
         }
         return res;
+    }
+    void Lexer::CreateFiles(std::vector<std::string> group, std::vector<std::string> lines, int pc)
+    {
+        auto list = std::vector<std::string>();
+        for (const auto& _line: group)
+        {
+            std::string line = _line;
+            size_t start = 0;
+            while (start < line.size() && std::isspace(static_cast<unsigned char>(line[start])))
+                start++;
+            line.erase(0, start);
+            auto [name, param] = Function(line);
+            auto params = std::move(param);
+            if (name == "@files")
+            {
+                std::string file_name = GetStringLite(params->at(0));
+                if (this->files_variable.find(file_name) != this->files_variable.end())
+                {
+                    std::printf("\033[31m" "Error:" "\033[0m" " The Files Variable Is Repeat Define!\n");
+                    std::exit(1);
+                }
+                if (params->size() == 2)
+                {
+                    std::string extend_files = GetStringLite(params->at(1));
+                    if (this->files_variable.find(extend_files) != this->files_variable.end())
+                    {
+                        std::printf("\033[31m" "Error:" "\033[0m" " Can Not Found The Extend Files!\n");
+                        std::exit(1);
+                    }
+                }
+            }
+            else if (name == "add_file")
+            {
+                CheckParam(params, 1, lines, pc);
+                list.push_back(GetStringLite(params->at(0)));
+            }
+            else if (name == "remove_file")
+            {
+                CheckParam(params, 1, lines, pc);
+                std::string file = GetStringLite(params->at(0));
+                int index = 0;
+                auto pos = find(list.begin(), list.end(), file);
+                list.erase(pos);
+            }
+            else if (name == "foreach_folder")
+            {
+                CheckParam(params, 2, lines, pc);
+                std::string folder_path = GetStringLite(params->at(0));
+                std::string file_extension = GetStringLite(params->at(1));
+                auto temp_list = SearchFileInFolder(folder_path, file_extension);
+                for (const auto& file: temp_list)
+                {
+                    list.push_back(file);
+                }
+            }
+            else if (name == "recursion_folder")
+            {
+                CheckParam(params, 2, lines, pc);
+                std::string folder_path = GetStringLite(params->at(0));
+                std::string file_extension = GetStringLite(params->at(1));
+                auto temp_list = RecursionFileInFolder(folder_path, file_extension);
+                for (const auto& file: temp_list)
+                {
+                    list.push_back(file);
+                }
+            }
+            else if (name == "print")
+            {
+                CheckParam(params, 1, lines, pc);
+                std::string msg = GetStringLite(params->at(0));
+                std::printf("\033[35m" "%s\n" "\033[0m", msg.c_str());
+                int i = 0;
+                for (const auto& file: list)
+                {
+                    std::printf("\033[32m" "%d|" "\033[0m" " %s\n"  , i, file.c_str());
+                    i += 1;
+                }
+            }
+            else 
+            {
+                std::printf("\033[31m" "Error:" "\033[0m" " Can Not Found The Extend Files!\n");
+                std::exit(1);
+            }
+        }
+        this->files_variable.insert({});
     }
     Lexer::Lexer(std::vector<std::string> lines)
     {
