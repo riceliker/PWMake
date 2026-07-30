@@ -1,9 +1,6 @@
-#include "mod.hpp"
-#include <filesystem>
-#include <string>
-#include <vector>
+#include "ninja.hpp"
 
-namespace PWMake::Core
+namespace PWMake::Ninja
 {
     NinjaFile::NinjaFile()
     {

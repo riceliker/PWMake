@@ -1,4 +1,5 @@
-#include "mod.hpp"
+#pragma once
+
 #include <memory>
 #include <print>
 #include <string>
@@ -7,32 +8,32 @@
 #include <vector>
 
 #if defined(__unix__)
-std::string _platform = "unix";
+inline std::string platform = "unix";
 #endif
 
 #if defined(__linux__)
-std::string _platform = "linux";
+inline std::string platform = "linux";
 #endif
 
 #if defined(__APPLE__)
-std::string _platform = "macos";
+inline std::string platform = "macos";
 #endif
 
 #if defined(_WIN64)
-std::string _platform = "window";
+inline std::string platform = "window";
 #endif
 
 #if defined (__x86_64__)
-std::string _arch = "amd64";
+inline std::string arch = "amd64";
 #endif
 
 #if defined (__aarch64__)
-std::string _arch = "arm64";
+inline std::string arch = "arm64";
 #endif
 
-namespace PWMake::Core 
+namespace PWMake::Utils
 {
-    void CheckParam(std::unique_ptr<std::vector<std::string>>& params, int count, std::vector<std::string> line, int pc)
+    inline void CheckParam(std::unique_ptr<std::vector<std::string>>& params, int count, std::vector<std::string> line, int pc)
     {
         if (params->size() != count)
         {
@@ -43,7 +44,7 @@ namespace PWMake::Core
         }
     }
 
-    std::tuple<std::string, std::unique_ptr<std::vector<std::string>>> Function(std::string text)
+    inline std::tuple<std::string, std::unique_ptr<std::vector<std::string>>> Function(std::string text)
     {
         std::string name = "";
         std::unique_ptr<std::vector<std::string>> params(new std::vector<std::string>());
@@ -83,7 +84,7 @@ namespace PWMake::Core
         return std::tuple(name, std::move(params));
     }
 
-    std::string GetString(std::unordered_map<std::string, std::string> map, std::string input, std::vector<std::string> lines, int pc)
+    inline std::string GetString(std::unordered_map<std::string, std::string> map, std::string input, std::vector<std::string> lines, int pc)
     {
         size_t start = 0;
         while (start < input.size() && std::isspace(static_cast<unsigned char>(input[start])))
@@ -92,11 +93,11 @@ namespace PWMake::Core
         // special string
         if (input == "__platform__")
         {
-            return _platform;
+            return platform;
         }
         if (input == "__arch__")
         {
-            return _arch;
+            return arch;
         }
         // if not literal string, find from dictionary
         if (input[0] == '"' && input[input.size()-1] == '"')
@@ -119,7 +120,7 @@ namespace PWMake::Core
         }
     }
 
-    std::string GetStringLite(std::string input)
+    inline std::string GetStringLite(std::string input)
     {
         size_t start = 0;
             while (start < input.size() && std::isspace(static_cast<unsigned char>(input[start])))
@@ -132,7 +133,7 @@ namespace PWMake::Core
         return input;
     }
 
-    bool GetBool(std::unordered_map<std::string, bool> map, std::string input, std::vector<std::string> lines, int pc)
+    inline bool GetBool(std::unordered_map<std::string, bool> map, std::string input, std::vector<std::string> lines, int pc)
     {
         size_t start = 0;
         while (start < input.size() && std::isspace(static_cast<unsigned char>(input[start])))
@@ -155,7 +156,7 @@ namespace PWMake::Core
         }
     }
 
-    std::vector<std::string> CatchGroup(std::vector<std::string> line, int pc)
+    inline std::vector<std::string> CatchGroup(std::vector<std::string> line, int pc)
     {
         auto group = std::vector<std::string>();
         while (line[pc][0] != ';')

@@ -1,4 +1,5 @@
 #pragma once
+#include "../lexer/lexer.hpp"
 
 #include <string>
 #include <vector>
@@ -13,4 +14,7 @@ namespace PWMake::CLI
         void OutputVersion();
         void OutputAbout();
     };
+
+    PWMake::Lexer::Lexer AnalyzeFile();
+    void BuildNinja(PWMake::Lexer::Lexer lexer);
 }

@@ -4,12 +4,10 @@
  * a struct, then send then to ninja.cpp.
  */
 
-#include "mod.hpp"
-#include <filesystem>
-#include <string>
-#include <unordered_map>
+#include "lexer.hpp"
+#include "../utils/utils.hpp"
 
-namespace PWMake::Core 
+namespace PWMake::Lexer
 {
     CompilerInfo CompilerGroup(std::vector<std::string> group, std::vector<std::string> lines, int pc)
     {
@@ -18,22 +16,22 @@ namespace PWMake::Core
         info.is_debug = false;
         for (const auto& line: group)
         {
-            auto [name, _params] = Function(line);
+            auto [name, _params] = Utils::Function(line);
             auto params = std::move(_params);
             if (name == "@compiler")
             {
-                CheckParam(params, 1, lines, pc);
-                info.compiler_path = GetStringLite(params->at(0));
+                Utils::CheckParam(params, 1, lines, pc);
+                info.compiler_path = Utils::GetStringLite(params->at(0));
             }
             else if (name == "language_version")
             {
-                CheckParam(params, 1, lines, pc);
-                info.standard_language = GetStringLite(params->at(0));
+                Utils::CheckParam(params, 1, lines, pc);
+                info.standard_language = Utils::GetStringLite(params->at(0));
             }
             else if (name == "standard_library")
             {
-                CheckParam(params, 1, lines, pc);
-                info.standard_library = GetStringLite(params->at(0));
+                Utils::CheckParam(params, 1, lines, pc);
+                info.standard_library = Utils::GetStringLite(params->at(0));
             }
             else if (name == "compiler_warning")
             {
@@ -49,8 +47,8 @@ namespace PWMake::Core
             }
             else if (name == "library_header")
             {
-                CheckParam(params, 1, lines, pc);
-                info.header.push_back(GetStringLite(params->at(0)));
+                Utils::CheckParam(params, 1, lines, pc);
+                info.header.push_back(Utils::GetStringLite(params->at(0)));
             }
             else 
             {
@@ -68,18 +66,18 @@ namespace PWMake::Core
         ProjectInfo info = {};
         for (const auto& line: group)
         {
-            auto [name, _params] = Function(line);
+            auto [name, _params] = Utils::Function(line);
             auto params = std::move(_params);
             if (name == "@project")
             {
-                CheckParam(params, 2, lines, pc);
-                info.project_name = GetStringLite(params->at(0));
-                info.project_type = GetStringLite(params->at(1));
+                Utils::CheckParam(params, 2, lines, pc);
+                info.project_name = Utils::GetStringLite(params->at(0));
+                info.project_type = Utils::GetStringLite(params->at(1));
             }
             else if (name == "source_files") 
             {
-                CheckParam(params, 1, lines, pc);
-                std::string files = GetStringLite(params->at(0));
+                Utils::CheckParam(params, 1, lines, pc);
+                std::string files = Utils::GetStringLite(params->at(0));
                 if (dictionary.find(files) != dictionary.end())
                 {
                     info.source_files = dictionary.at(files);
@@ -94,8 +92,8 @@ namespace PWMake::Core
             }
             else if (name == "add_library")
             {
-                CheckParam(params, 1, lines, pc);
-                info.library.push_back(GetStringLite(params->at(0)));
+                Utils::CheckParam(params, 1, lines, pc);
+                info.library.push_back(Utils::GetStringLite(params->at(0)));
             }
             else 
             {

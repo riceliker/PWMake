@@ -1,23 +1,19 @@
-/*
- * file.cpp: <build.pwm> -> file -> lexer
- * Any file operaction will be run here.
- */
-#include "mod.hpp"
+#pragma once
 
 #include <string>
 #include <vector>
 #include <iostream>
 #include <fstream>
 
-namespace PWMake::Core
+namespace PWMake::Lexer
 {
-    std::vector<std::string> GetTextLinesInFile(std::string path)
+    inline std::vector<std::string> GetTextLinesInFile(std::string path)
     {
         std::ifstream file(path);
 
         if(!file.is_open())
         {
-            std::cout << "PWMake: Can not open file:" << path << std::endl;
+            std::printf("   ""\033[1;33m""Can not found build file: build.pwm""\033[0m");
             std::exit(1);
         }
 
@@ -43,7 +39,7 @@ namespace PWMake::Core
         return file_lines;
     }
 
-    void CreateFileInPath(std::vector<std::string> text_line, std::string file_path)
+    inline void CreateFileInPath(std::vector<std::string> text_line, std::string file_path)
     {
         std::ofstream file(file_path);
 
@@ -63,7 +59,7 @@ namespace PWMake::Core
         file.close();
     }
     
-    std::vector<std::filesystem::path> SearchFileInFolder(std::string folder_path, std::string extension)
+    inline std::vector<std::filesystem::path> SearchFileInFolder(std::string folder_path, std::string extension)
     {
         auto files = std::vector<std::filesystem::path>();
         if (!std::filesystem::exists(folder_path))
@@ -90,7 +86,7 @@ namespace PWMake::Core
         return files;
     }
 
-    std::vector<std::filesystem::path> RecursionFileInFolder(std::string folder_path, std::string extension)
+    inline std::vector<std::filesystem::path> RecursionFileInFolder(std::string folder_path, std::string extension)
     {
         auto files = std::vector<std::filesystem::path>();
         if (!std::filesystem::exists(folder_path))

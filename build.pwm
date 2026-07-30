@@ -7,9 +7,7 @@
 ;
 
 @files("Source")
-  foreach_folder("src/core", ".cpp")
-  foreach_folder("src/cli", ".cpp")
-  add_file("src/main.cpp")
+  recursion_folder("src", ".cpp")
 ;
 
 @project("PWMake", "binary")

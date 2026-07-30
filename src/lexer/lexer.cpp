@@ -3,10 +3,11 @@
  * Analyze the PWMake file grammar and run the command.
  */
 
-#include "mod.hpp"
-#include <cstdio>
+#include "lexer.hpp"
+#include "../utils/file.hpp"
+#include "../utils/utils.hpp"
 
-namespace PWMake::Core
+namespace PWMake::Lexer
 {    
     /* only all element in stack is true, return true. */
     static inline bool IsAllTrue(const std::unique_ptr<std::stack<bool>>& src)
@@ -30,8 +31,8 @@ namespace PWMake::Core
         while (start < line.size() && std::isspace(static_cast<unsigned char>(line[start])))
             start++;
         line.erase(0, start);
-        auto [name, params] = Function(line);
-        auto group = CatchGroup(lines, pc);
+        auto [name, params] = Utils::Function(line);
+        auto group =  Utils::CatchGroup(lines, pc);
         if (name == "@files")
         {
             this->CreateFiles(group, lines, pc);
@@ -57,7 +58,7 @@ namespace PWMake::Core
     void Lexer::RegistryVariable(std::vector<std::string> lines, int pc)
     {
         auto line = lines[pc];
-        auto [name, _params] = Function(line);
+        auto [name, _params] =  Utils::Function(line);
         auto params = std::move(_params);
 
         /* string variable */
@@ -66,8 +67,8 @@ namespace PWMake::Core
             /*
              * $string(name: def<string>, value: string)
              */
-            CheckParam(params, 2, lines, pc);
-            std::string a = GetString(this->string_variable,params->at(1), lines, pc);
+            Utils::CheckParam(params, 2, lines, pc);
+            std::string a = Utils::GetString(this->string_variable,params->at(1), lines, pc);
             this->string_variable.insert({params->at(0), a});
             return;
         }
@@ -76,9 +77,9 @@ namespace PWMake::Core
             /*
              * $same(result: def<bool>, first: string, second: string)
              */
-            CheckParam(params, 3, lines, pc);
-            std::string a = GetString(this->string_variable,params->at(1), lines, pc);
-            std::string b = GetString(this->string_variable,params->at(2), lines, pc);
+            Utils::CheckParam(params, 3, lines, pc);
+            std::string a = Utils::GetString(this->string_variable,params->at(1), lines, pc);
+            std::string b = Utils::GetString(this->string_variable,params->at(2), lines, pc);
             this->bool_variable.insert({params->at(0), a==b});
             return;
         }
@@ -87,9 +88,9 @@ namespace PWMake::Core
             /*
              * $same(result: def<bool>, bigger: string, smaller: string)
              */
-            CheckParam(params, 3, lines, pc);
-            std::string a = GetString(this->string_variable,params->at(1), lines, pc);
-            std::string b = GetString(this->string_variable,params->at(2), lines, pc);
+            Utils::CheckParam(params, 3, lines, pc);
+            std::string a = Utils::GetString(this->string_variable,params->at(1), lines, pc);
+            std::string b = Utils::GetString(this->string_variable,params->at(2), lines, pc);
             this->bool_variable.insert({params->at(0), a.find(b) != std::string::npos});
             return;
         }
@@ -98,9 +99,9 @@ namespace PWMake::Core
             /*
              * $add(result: def<string>, forward: string, backend: string)
              */
-            CheckParam(params, 3, lines, pc);
-            std::string a = GetString(this->string_variable,params->at(1), lines, pc);
-            std::string b = GetString(this->string_variable,params->at(2), lines, pc);
+            Utils::CheckParam(params, 3, lines, pc);
+            std::string a = Utils::GetString(this->string_variable,params->at(1), lines, pc);
+            std::string b = Utils::GetString(this->string_variable,params->at(2), lines, pc);
             this->string_variable.insert({params->at(0), a + b});
             return;
         }
@@ -109,8 +110,8 @@ namespace PWMake::Core
             /*
              * $prints(msg: def<string>)
              */
-            CheckParam(params, 1, lines, pc);
-            std::string a = GetString(this->string_variable,params->at(0), lines, pc);
+            Utils::CheckParam(params, 1, lines, pc);
+            std::string a = Utils::GetString(this->string_variable,params->at(0), lines, pc);
             std::printf("%s\n", a.c_str());
             return;
         }
@@ -119,8 +120,8 @@ namespace PWMake::Core
             /*
              * $prints(msg: def<bool>)
              */
-            CheckParam(params, 1, lines, pc);
-            bool a = GetBool(this->bool_variable, params->at(0), lines, pc);
+            Utils::CheckParam(params, 1, lines, pc);
+            bool a =  Utils::GetBool(this->bool_variable, params->at(0), lines, pc);
             std::printf("%s\n", a?"true":"false");
             return;
         }
@@ -131,8 +132,8 @@ namespace PWMake::Core
             /*
              * $bool(name: def<bool>, value: bool)
              */
-            CheckParam(params, 2, lines, pc);
-            bool a = GetBool(this->bool_variable, params->at(1), lines, pc);
+            Utils::CheckParam(params, 2, lines, pc);
+            bool a = Utils::GetBool(this->bool_variable, params->at(1), lines, pc);
             this->bool_variable.insert({params->at(0), a});
             return;
         }
@@ -141,8 +142,8 @@ namespace PWMake::Core
             /*
              * $not(name: def<bool>, value: bool)
              */
-            CheckParam(params, 2, lines, pc);
-            bool a = GetBool(this->bool_variable, params->at(1), lines, pc);
+            Utils::CheckParam(params, 2, lines, pc);
+            bool a = Utils::GetBool(this->bool_variable, params->at(1), lines, pc);
             this->bool_variable.insert({params->at(0), !a});
             return;
         }
@@ -151,9 +152,9 @@ namespace PWMake::Core
             /*
              * $and(name: def<bool>, first: bool, second: bool)
              */
-            CheckParam(params, 3, lines, pc);
-            bool a = GetBool(this->bool_variable, params->at(1), lines, pc);
-            bool b = GetBool(this->bool_variable, params->at(2), lines, pc);
+            Utils::CheckParam(params, 3, lines, pc);
+            bool a = Utils::GetBool(this->bool_variable, params->at(1), lines, pc);
+            bool b = Utils::GetBool(this->bool_variable, params->at(2), lines, pc);
             this->bool_variable.insert({params->at(0), a&&b});
             return;
         }
@@ -162,9 +163,9 @@ namespace PWMake::Core
             /*
              * $or(name: def<bool>, first: bool, second: bool)
              */
-            CheckParam(params, 3, lines, pc);
-            bool a = GetBool(this->bool_variable, params->at(1), lines, pc);
-            bool b = GetBool(this->bool_variable, params->at(2), lines, pc);
+            Utils::CheckParam(params, 3, lines, pc);
+            bool a = Utils::GetBool(this->bool_variable, params->at(1), lines, pc);
+            bool b = Utils::GetBool(this->bool_variable, params->at(2), lines, pc);
             this->bool_variable.insert({params->at(0), a||b});
             return;
         }
@@ -173,9 +174,9 @@ namespace PWMake::Core
             /*
              * $and(name: def<bool>, first: bool, second: bool)
              */
-            CheckParam(params, 3, lines, pc);
-            bool a = GetBool(this->bool_variable, params->at(1), lines, pc);
-            bool b = GetBool(this->bool_variable, params->at(2), lines, pc);
+            Utils::CheckParam(params, 3, lines, pc);
+            bool a = Utils::GetBool(this->bool_variable, params->at(1), lines, pc);
+            bool b = Utils::GetBool(this->bool_variable, params->at(2), lines, pc);
             this->bool_variable.insert({params->at(0), a==b});
             return;
         }
@@ -190,7 +191,7 @@ namespace PWMake::Core
     void Lexer::ForkControl(std::unique_ptr<std::stack<bool>>& if_stack, std::vector<std::string> lines, int pc)
     {
         auto line = lines[pc];
-        auto [name, _params] = Function(line);
+        auto [name, _params] = Utils::Function(line);
         auto params = std::move(_params);
 
         if (name == ":if")
@@ -198,8 +199,8 @@ namespace PWMake::Core
             /*
              * :if(cond: bool)
              */
-            CheckParam(params, 1, lines, pc);
-            bool value = GetBool(this->bool_variable, params->at(0), lines, pc);
+            Utils::CheckParam(params, 1, lines, pc);
+            bool value = Utils::GetBool(this->bool_variable, params->at(0), lines, pc);
             if_stack->push(value);
             pc += 1;
         }
@@ -235,7 +236,7 @@ namespace PWMake::Core
         for (const auto& _line: group)
         {
             std::string line = _line;
-            auto [name, _params] = Function(line);
+            auto [name, _params] = Utils::Function(line);
             auto params = std::move(_params);
 
             if (name == "@files")
@@ -243,7 +244,7 @@ namespace PWMake::Core
                 /*
                  * @file(name: string, [optional] extend: string)
                  */
-                std::string file_name = GetString(this->string_variable, params->at(0), lines, pc);
+                std::string file_name = Utils::GetString(this->string_variable, params->at(0), lines, pc);
                 _name = file_name;
                 if (this->files_variable.find(file_name) != this->files_variable.end())
                 {
@@ -253,7 +254,7 @@ namespace PWMake::Core
                 // if it need to extend
                 if (params->size() == 2)
                 {
-                    std::string extend_files = GetString(this->string_variable, params->at(1), lines, pc);
+                    std::string extend_files = Utils::GetString(this->string_variable, params->at(1), lines, pc);
                     if (this->files_variable.find(extend_files) != this->files_variable.end())
                     {
                         std::printf("\033[31m" "Error:" "\033[0m" " Can Not Found The Extend Files!\n");
@@ -270,24 +271,24 @@ namespace PWMake::Core
                 /*
                  * add_file(direct<string>)
                  */
-                CheckParam(params, 1, lines, pc);
-                list.push_back(GetString(this->string_variable, params->at(0), lines, pc));
+                Utils::CheckParam(params, 1, lines, pc);
+                list.push_back(Utils::GetString(this->string_variable, params->at(0), lines, pc));
             }
             else if (name == "remove_file")
             {
                 /*
                  */
-                CheckParam(params, 1, lines, pc);
-                std::string file = GetString(this->string_variable, params->at(0), lines, pc);;
+                Utils::CheckParam(params, 1, lines, pc);
+                std::string file = Utils::GetString(this->string_variable, params->at(0), lines, pc);;
                 int index = 0;
                 auto pos = find(list.begin(), list.end(), file);
                 list.erase(pos);
             }
             else if (name == "foreach_folder")
             {
-                CheckParam(params, 2, lines, pc);
-                std::string folder_path = GetString(this->string_variable, params->at(0), lines, pc);
-                std::string file_extension = GetString(this->string_variable, params->at(1), lines, pc);
+                Utils::CheckParam(params, 2, lines, pc);
+                std::string folder_path = Utils::GetString(this->string_variable, params->at(0), lines, pc);
+                std::string file_extension = Utils::GetString(this->string_variable, params->at(1), lines, pc);
                 auto temp_list = SearchFileInFolder(folder_path, file_extension);
                 for (const auto& file: temp_list)
                 {
@@ -296,9 +297,9 @@ namespace PWMake::Core
             }
             else if (name == "recursion_folder")
             {
-                CheckParam(params, 2, lines, pc);
-                std::string folder_path = GetString(this->string_variable, params->at(0), lines, pc);;
-                std::string file_extension = GetString(this->string_variable, params->at(1), lines, pc);;
+                Utils::CheckParam(params, 2, lines, pc);
+                std::string folder_path = Utils::GetString(this->string_variable, params->at(0), lines, pc);;
+                std::string file_extension = Utils::GetString(this->string_variable, params->at(1), lines, pc);;
                 auto temp_list = RecursionFileInFolder(folder_path, file_extension);
                 for (const auto& file: temp_list)
                 {
@@ -307,8 +308,8 @@ namespace PWMake::Core
             }
             else if (name == "print")
             {
-                CheckParam(params, 1, lines, pc);
-                std::string msg = GetString(this->string_variable, params->at(0), lines, pc);
+                Utils::CheckParam(params, 1, lines, pc);
+                std::string msg = Utils::GetString(this->string_variable, params->at(0), lines, pc);
                 std::printf("\033[35m" "%s\n" "\033[0m", msg.c_str());
                 int i = 0;
                 for (const auto& file: list)

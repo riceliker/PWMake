@@ -1,0 +1,9 @@
+CompileFlags:
+  CompilationDatabase: .
+  Add:
+    - /opt/homebrew/opt/llvm@19/lib/clang/19
+    - -std=c++23
+    - -stdlib=libc++
+    
+    - -I/opt/homebrew/opt/sdl3/include
+    
