@@ -31,6 +31,12 @@ inline std::string arch = "amd64";
 inline std::string arch = "arm64";
 #endif
 
+#if defined (__clang__)
+inline std::string compiler = "clang";
+#elif defined (__GNUC__)
+inline std::string compiler = "gcc";
+#endif
+
 namespace PWMake::Utils
 {
     inline void CheckParam(std::unique_ptr<std::vector<std::string>>& params, int count, std::vector<std::string> line, int pc)
@@ -99,6 +105,10 @@ namespace PWMake::Utils
         {
             return arch;
         }
+        if (input == "__compiler__")
+        {
+            return compiler;
+        }
         // if not literal string, find from dictionary
         if (input[0] == '"' && input[input.size()-1] == '"')
         {
@@ -165,5 +175,25 @@ namespace PWMake::Utils
             pc += 1;
         }
         return group;
+    }
+
+    inline void StepLine(std::string name, float per)
+    {
+        //std::printf("\r\033[K");
+        int num = per * 10.0;
+        if (10 >= num && per >= 0)
+        {
+            std::string sym = "|";
+            for (int i = 0; i < num; ++i)
+            {
+                sym += "=";
+            }
+            for (int i = 0; i < 10 - num; ++i)
+            {
+                sym += " ";
+            }
+            sym += ">";
+            std::printf("   ""\033[1;32m""Analyze file""\033[0m""%s|%d%% \n", sym.c_str(), (int)per*100);
+        }
     }
 }

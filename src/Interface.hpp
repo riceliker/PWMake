@@ -4,6 +4,8 @@
 #include <vector>
 #include <filesystem>
 
+inline const std::string _version = "0.1.0";
+
 namespace PWMake
 {
     struct CompilerInfo

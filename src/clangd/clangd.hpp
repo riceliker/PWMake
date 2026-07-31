@@ -1,17 +1,17 @@
 #pragma once
 #include "../Interface.hpp"
 
-namespace PWMake::Ninja
+#include <string>
+#include <vector>
+namespace PWMake::Clangd
 {
-    // ninja.cpp
-    class Ninja
+    class Clangd
     {
     private:
         std::vector<std::string> data;
     public:
-        Ninja();
+        Clangd();
         std::vector<std::string> AsFile();
-        void AddCompiler(CompilerInfo info);
-        void AddSource(ProjectInfo info);
+        void AddCompilerFlag(CompilerInfo info);
     };
 }

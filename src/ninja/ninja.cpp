@@ -2,18 +2,18 @@
 
 namespace PWMake::Ninja
 {
-    NinjaFile::NinjaFile()
+    Ninja::Ninja()
     {
         this->data = std::vector<std::string>();
-        this->data.push_back("# PWMake 0.1.0");
+        this->data.push_back("# PWMake " + _version);
     }
 
-    std::vector<std::string> NinjaFile::AsFile()
+    std::vector<std::string> Ninja::AsFile()
     {
         return this->data;
     }
 
-    void NinjaFile::AddCompiler(CompilerInfo info)
+    void Ninja::AddCompiler(CompilerInfo info)
     {
         this->data.push_back("# ===== Compiler =====");
         std::string compiler = "compiler_path = " + info.compiler_path;
@@ -66,7 +66,7 @@ namespace PWMake::Ninja
         this->data.push_back("  command = $compiler_path $link_flags $in -o $out");
     }
 
-    void NinjaFile::AddSource(ProjectInfo info)
+    void Ninja::AddSource(ProjectInfo info)
     {
         this->data.push_back("# ===== Make Object =====");
         this->data.push_back("obj = ./build/obj");

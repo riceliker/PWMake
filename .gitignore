@@ -5,4 +5,5 @@ build/
 
 .ninja_log
 .ninja_deps
+.clangd
 compile_commands.json
