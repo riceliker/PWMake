@@ -1,8 +1,0 @@
-# PWMake0.1.0
-CompileFlags:
-  CompilationDatabase: .
-  Add:
-   - /opt/homebrew/opt/llvm@19/bin/clang++
-   - -std=c++23
-   - -stdlib=libc++
-   - -I/opt/homebrew/include/SDL3
