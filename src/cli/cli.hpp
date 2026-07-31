@@ -18,4 +18,5 @@ namespace PWMake::CLI
     PWMake::Lexer::Lexer AnalyzeFile();
     void CreateNinja(PWMake::Lexer::Lexer lexer);
     void CreateClangd(PWMake::Lexer::Lexer lexer);
+    void CreateCMD(PWMake::Lexer::Lexer lexer);
 }

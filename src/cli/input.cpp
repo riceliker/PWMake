@@ -11,6 +11,7 @@ namespace PWMake::CLI
             auto lexer = AnalyzeFile();
             CreateNinja(lexer);
             CreateClangd(lexer);
+            CreateCMD(lexer);
             return;
         }
         else if (params[1] == "--version")
@@ -37,6 +38,8 @@ namespace PWMake::CLI
         }
         else if (params[1] == "cmd")
         {
+            auto lexer = AnalyzeFile();
+            CreateCMD(lexer);
             return;
         }
         else 

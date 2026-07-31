@@ -12,6 +12,7 @@ rule link
 # ===== Make Object =====
 obj = ./build/obj
 bin = ./build/PWMake
+build $obj/PWMake/src/cmd/cmd.o: compile src/cmd/cmd.cpp
 build $obj/PWMake/src/clangd/clangd.o: compile src/clangd/clangd.cpp
 build $obj/PWMake/src/lexer/lexer.o: compile src/lexer/lexer.cpp
 build $obj/PWMake/src/lexer/transform.o: compile src/lexer/transform.cpp
@@ -19,5 +20,5 @@ build $obj/PWMake/src/cli/input.o: compile src/cli/input.cpp
 build $obj/PWMake/src/cli/run.o: compile src/cli/run.cpp
 build $obj/PWMake/src/ninja/ninja.o: compile src/ninja/ninja.cpp
 build $obj/PWMake/src/main.o: compile src/main.cpp
-build $bin: link $obj/PWMake/src/clangd/clangd.o $obj/PWMake/src/lexer/lexer.o $obj/PWMake/src/lexer/transform.o $obj/PWMake/src/cli/input.o $obj/PWMake/src/cli/run.o $obj/PWMake/src/ninja/ninja.o $obj/PWMake/src/main.o /opt/homebrew/lib/libSDL3.dylib 
+build $bin: link $obj/PWMake/src/cmd/cmd.o $obj/PWMake/src/clangd/clangd.o $obj/PWMake/src/lexer/lexer.o $obj/PWMake/src/lexer/transform.o $obj/PWMake/src/cli/input.o $obj/PWMake/src/cli/run.o $obj/PWMake/src/ninja/ninja.o $obj/PWMake/src/main.o /opt/homebrew/lib/libSDL3.dylib 
 default $bin

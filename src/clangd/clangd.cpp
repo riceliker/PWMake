@@ -9,10 +9,6 @@ namespace PWMake::Clangd
         this->data = std::vector<std::string>();
         this->data.push_back("# PWMake" + _version);
     }
-    std::vector<std::string> Clangd::AsFile()
-    {
-        return this->data;
-    }
     void Clangd::AddCompilerFlag(CompilerInfo info)
     {
         this->data.push_back("CompileFlags:");

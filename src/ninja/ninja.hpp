@@ -4,13 +4,10 @@
 namespace PWMake::Ninja
 {
     // ninja.cpp
-    class Ninja
+    class Ninja :public IMakeFile
     {
-    private:
-        std::vector<std::string> data;
     public:
         Ninja();
-        std::vector<std::string> AsFile();
         void AddCompiler(CompilerInfo info);
         void AddSource(ProjectInfo info);
     };

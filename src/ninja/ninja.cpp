@@ -8,11 +8,6 @@ namespace PWMake::Ninja
         this->data.push_back("# PWMake " + _version);
     }
 
-    std::vector<std::string> Ninja::AsFile()
-    {
-        return this->data;
-    }
-
     void Ninja::AddCompiler(CompilerInfo info)
     {
         this->data.push_back("# ===== Compiler =====");

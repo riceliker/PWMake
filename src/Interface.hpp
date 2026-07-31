@@ -8,6 +8,17 @@ inline const std::string _version = "0.1.0";
 
 namespace PWMake
 {
+    class IMakeFile
+    {
+    protected:
+        std::vector<std::string> data;
+    public:
+        virtual std::vector<std::string> AsFile()
+        {
+            return this->data;
+        }
+    };
+
     struct CompilerInfo
     {
         std::string compiler_path;

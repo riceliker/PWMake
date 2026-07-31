@@ -1,6 +1,7 @@
 #include "../lexer/lexer.hpp"
 #include "../ninja/ninja.hpp"
 #include "../clangd/clangd.hpp"
+#include "../cmd/cmd.hpp"
 #include "../utils/file.hpp"
 #include "../utils/utils.hpp"
 
@@ -38,5 +39,12 @@ namespace PWMake::CLI
         out.AddCompilerFlag(lexer.compiler);
         std::printf("   ""\033[1;32m""Created clangd file successful.\n""\033[0m");
         PWMake::Lexer::CreateFileInPath(out.AsFile(), "./.clangd");
+    }
+
+    void CreateCMD(PWMake::Lexer::Lexer lexer)
+    {
+        auto out = PWMake::CMD::CMD(lexer.compiler, lexer.project);
+        std::printf("   ""\033[1;32m""Created compile_commands.json file successful.\n""\033[0m");
+        PWMake::Lexer::CreateFileInPath(out.AsFile(), "./compile_commands.json");
     }
 }
