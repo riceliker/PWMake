@@ -1,14 +1,23 @@
 # PWMake 0.1.0
 # ===== Compiler =====
 compiler_path = /opt/homebrew/opt/llvm@19/bin/clang++
-compiler_flags = -std=c++23 -stdlib=libc++ -I/opt/homebrew/include/SDL3  -g -O0
+compiler_flags = -std=c++23 -stdlib=libc++ -g -O0
 rule compile
   command = $compiler_path $compiler_flags -c $in -o $out -MD -MF $out.d
   depfile = $out.d
   deps = gcc
+rule compile_lib
+  command = $compiler_path $compiler_flags -fPIC -c $in -o $out -MD -MF $out.d
+  depfile = $out.d
+  deps = gcc
 link_flags = -stdlib=libc++
-rule link
-  command = $compiler_path $link_flags $in -o $out
+rule binary
+  command = $compiler_path $in -o $out $link_flags
+ar = ar
+rule static_library
+  command = $ar rc $out $in
+rule shared_library
+  command = $compiler_path -shared $in -o $out $link_flags
 # ===== Make Object =====
 obj = ./build/obj
 bin = ./build/PWMake
@@ -20,5 +29,5 @@ build $obj/PWMake/src/cli/input.o: compile src/cli/input.cpp
 build $obj/PWMake/src/cli/run.o: compile src/cli/run.cpp
 build $obj/PWMake/src/ninja/ninja.o: compile src/ninja/ninja.cpp
 build $obj/PWMake/src/main.o: compile src/main.cpp
-build $bin: link $obj/PWMake/src/cmd/cmd.o $obj/PWMake/src/clangd/clangd.o $obj/PWMake/src/lexer/lexer.o $obj/PWMake/src/lexer/transform.o $obj/PWMake/src/cli/input.o $obj/PWMake/src/cli/run.o $obj/PWMake/src/ninja/ninja.o $obj/PWMake/src/main.o /opt/homebrew/lib/libSDL3.dylib 
+build $bin: binary $obj/PWMake/src/cmd/cmd.o $obj/PWMake/src/clangd/clangd.o $obj/PWMake/src/lexer/lexer.o $obj/PWMake/src/lexer/transform.o $obj/PWMake/src/cli/input.o $obj/PWMake/src/cli/run.o $obj/PWMake/src/ninja/ninja.o $obj/PWMake/src/main.o 
 default $bin

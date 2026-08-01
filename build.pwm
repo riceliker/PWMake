@@ -3,7 +3,6 @@
   language_version("c++23")
   standard_library("libc++")
   compiler_debug()
-  library_header("/opt/homebrew/include/SDL3")
 ;
 
 @files("Source")
@@ -12,5 +11,4 @@
 
 @project("PWMake", "binary")
   source_files("Source")
-  add_library("/opt/homebrew/lib/libSDL3.dylib")
 ;

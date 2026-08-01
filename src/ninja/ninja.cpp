@@ -1,4 +1,5 @@
 #include "ninja.hpp"
+#include "../utils/utils.hpp"
 
 namespace PWMake::Ninja
 {
@@ -48,6 +49,10 @@ namespace PWMake::Ninja
         this->data.push_back("  command = $compiler_path $compiler_flags -c $in -o $out -MD -MF $out.d");
         this->data.push_back("  depfile = $out.d");
         this->data.push_back("  deps = gcc");
+        this->data.push_back("rule compile_lib");
+        this->data.push_back("  command = $compiler_path $compiler_flags -fPIC -c $in -o $out -MD -MF $out.d");
+        this->data.push_back("  depfile = $out.d");
+        this->data.push_back("  deps = gcc");
 
         // create link task
         std::string link_flags = "link_flags =";
@@ -57,16 +62,70 @@ namespace PWMake::Ninja
         }
         
         this->data.push_back(link_flags);
-        this->data.push_back("rule link");
-        this->data.push_back("  command = $compiler_path $link_flags $in -o $out");
+        this->data.push_back("rule binary");
+        this->data.push_back("  command = $compiler_path $in -o $out $link_flags");
+
+        // create static library
+        this->data.push_back("ar = ar");
+        this->data.push_back("rule static_library");
+        this->data.push_back("  command = $ar rc $out $in");
+
+        // create dynamic library
+        this->data.push_back("rule shared_library");
+        this->data.push_back("  command = $compiler_path -shared $in -o $out $link_flags");
     }
 
     void Ninja::AddSource(ProjectInfo info)
     {
         this->data.push_back("# ===== Make Object =====");
         this->data.push_back("obj = ./build/obj");
-        this->data.push_back("bin = ./build/" + info.project_name);
-        std::string links = "build $bin: link ";
+        
+        std::string links = "build $bin:";
+        std::string name_lib = "";
+        std::string name_ext = "";
+
+        // project name
+        if (info.project_type == "binary")
+        {
+            links += " binary ";
+            name_ext = "";
+        }
+        else if (info.project_type == "static")
+        {
+            links += " static_library ";
+            name_ext = ".a";
+            name_lib = "lib";
+        }
+        else if (info.project_type == "shared")
+        {
+            links += " shared_library ";
+            name_lib = "lib";
+            if (platform == "windows")
+            {
+                name_ext = ".dll";
+            }
+            else if (platform == "macos")
+            {
+                name_ext = ".dylib";
+            }
+            else if (platform == "linux")
+            {
+                name_ext = ".so";
+            }
+            else 
+            {
+                std::printf("\033[31m" "Error:" "\033[0m" " Unknown Project Platform.\n");
+                std::exit(1);
+            }
+        }
+        else 
+        {
+            std::printf("\033[31m" "Error:" "\033[0m" " Unknown Project Build Type(%s).\n", info.project_type.c_str());
+            std::exit(1);
+        }
+
+        this->data.push_back("bin = ./build/" + name_lib + info.project_name + name_ext);
+        // source file
         for (const auto& file: info.source_files)
         {
             std::filesystem::path out = file;
@@ -82,6 +141,13 @@ namespace PWMake::Ninja
         {
             links.append(lib + " ");
         }
+
+        if (platform == "windows")
+        {
+            links.append(" -static -static-libgcc -static-libstdc++");
+        }
+
+
         this->data.push_back(links);
         this->data.push_back("default $bin");
     }

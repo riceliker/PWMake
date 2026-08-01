@@ -1,0 +1,31 @@
+@compiler("/opt/homebrew/opt/llvm@19/bin/clang++")
+  language_version("c++23")
+  standard_library("libc++")
+  library_header("src/shared")
+;
+
+@files("task1")
+  foreach_folder("src/com1", ".cpp")
+;
+
+@files("task2")
+  foreach_folder("src/com2", ".cpp")
+;
+
+@files("shared")
+  foreach_folder("src/shared", ".cpp")
+;
+
+@project("task1", "binary")
+  source_files("task1")
+;
+
+@project("test_dylib", "shared")
+  source_files("shared")
+;
+
+@project("task2", "binary")
+  source_files("task2")
+  add_library("build/libtest_dylib.dylib")
+;
+

@@ -30,7 +30,7 @@ namespace PWMake::CMD
                 std::filesystem::path file = _file;
                 std::string cfile = file.string();
                 std::string ofile = "build/obj/" + proj.project_name + "/" + file.replace_extension(".o").string();
-                std::string dfile = file.replace_extension(".o.d");
+                std::string dfile = file.replace_extension(".o.d").string();
 
                 this->data.push_back("  {");
 

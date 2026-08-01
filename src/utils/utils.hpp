@@ -20,7 +20,7 @@ inline std::string platform = "macos";
 #endif
 
 #if defined(_WIN64)
-inline std::string platform = "window";
+inline std::string platform = "windows";
 #endif
 
 #if defined (__x86_64__)
