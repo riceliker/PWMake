@@ -11,6 +11,16 @@ If you are hate too, use it is a good idea. It's lite and easy.
 ### Macos
 1. Install clang and ninja. Use homebrew is good idea.
 2. Open the bootstrap folder and find build.ninja.macos. Remember modify your compiler paths.
+and copy it in root of program folder. Remember rename it as `build.ninja`.
+3. Run `ninja` to bootstrap build PWMake.
+4. Open the build folder. You will find the PWMake execute file.
+
+### Windows
+1. Install MSYS2 and MinGW. Yes, MSVC is not support. PWMake hate MSVC.
+2. Open the MSYS2 Terminal. Use `pacman -S mingw-w64-clang-x86_64-toolchain` to install clang.
+3. Install Ninja too. Use `pacman -S ninja`.
+4. Open the bootstrap folder and find build.ninja.windows. Remember modify your compiler paths.
+and copy it in root of program folder. Remember rename it as `build.ninja`.
 3. Run `ninja` to bootstrap build PWMake.
 4. Open the build folder. You will find the PWMake execute file.
 
