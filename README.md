@@ -7,10 +7,12 @@ PWMake is a simple C/C++ program build system. Basic by Ninja.
 If you are hate too, use it is a good idea. It's lite and easy.
 
 ## How to use
-1. Firstly, you should have a ninja environment.
-2. Use ninja to build PWMake.
-3. Write build.pwm to create you build task.
-4. Use PWMake to build your task.
+
+### Macos
+1. Install clang and ninja. Use homebrew is good idea.
+2. Open the bootstrap folder and find build.ninja.macos. Remember modify your compiler paths.
+3. Run `ninja` to bootstrap build PWMake.
+4. Open the build folder. You will find the PWMake execute file.
 
 ## Example
 ```pwm
