@@ -5,16 +5,15 @@
 #include <iostream>
 #include <fstream>
 
-namespace PWMake::Lexer
+namespace PWMake::Utils
 {
-    inline std::vector<std::string> GetTextLinesInFile(std::string path)
+    inline std::optional<std::vector<std::string>> GetTextLinesInFile(std::string path)
     {
         std::ifstream file(path);
 
         if(!file.is_open())
         {
-            std::printf("   ""\033[1;33m""Can not found build file: build.pwm""\033[0m");
-            std::exit(1);
+            return std::nullopt;
         }
 
         std::string line;

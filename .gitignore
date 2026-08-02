@@ -7,3 +7,5 @@ build/
 .ninja_deps
 .clangd
 compile_commands.json
+
+build.ninja

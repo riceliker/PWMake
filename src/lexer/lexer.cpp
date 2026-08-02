@@ -39,11 +39,11 @@ namespace PWMake::Lexer
         }
         else if (name == "@compiler")
         {
-            this->compiler = CompilerGroup(group, lines, pc);
+            this->compiler = this->CompilerGroup(group, lines, pc);
         }
         else if (name == "@project")
         {
-            this->project.push_back(ProjectGroup(group, this->files_variable, lines, pc));
+            this->project.push_back(this->ProjectGroup(group, this->files_variable, lines, pc));
         }
         else 
         {
@@ -289,7 +289,7 @@ namespace PWMake::Lexer
                 Utils::CheckParam(params, 2, lines, pc);
                 std::string folder_path = Utils::GetString(this->string_variable, params->at(0), lines, pc);
                 std::string file_extension = Utils::GetString(this->string_variable, params->at(1), lines, pc);
-                auto temp_list = SearchFileInFolder(folder_path, file_extension);
+                auto temp_list = Utils::SearchFileInFolder(folder_path, file_extension);
                 for (const auto& file: temp_list)
                 {
                     list.push_back(file);
@@ -300,7 +300,7 @@ namespace PWMake::Lexer
                 Utils::CheckParam(params, 2, lines, pc);
                 std::string folder_path = Utils::GetString(this->string_variable, params->at(0), lines, pc);;
                 std::string file_extension = Utils::GetString(this->string_variable, params->at(1), lines, pc);;
-                auto temp_list = RecursionFileInFolder(folder_path, file_extension);
+                auto temp_list = Utils::RecursionFileInFolder(folder_path, file_extension);
                 for (const auto& file: temp_list)
                 {
                     list.push_back(file);
@@ -328,8 +328,10 @@ namespace PWMake::Lexer
     }
 
     /* analyze the command */
-    Lexer::Lexer(std::vector<std::string> lines)
+    Lexer::Lexer(std::vector<std::string> lines, std::unordered_map<std::string, bool> bool_variable, std::unordered_map<std::string, std::string> string_variable)
     {
+        this->bool_variable = bool_variable;
+        this->string_variable = string_variable;
         size_t pc = 0;
         std::unique_ptr<std::stack<bool>> if_stack(new std::stack<bool>());
         while (pc != lines.size() - 1)

@@ -1,0 +1,2 @@
+# This is the config file
+compiler_path=/opt/homebrew/opt/llvm@19/bin/clang++

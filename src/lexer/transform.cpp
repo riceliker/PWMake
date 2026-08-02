@@ -9,7 +9,7 @@
 
 namespace PWMake::Lexer
 {
-    CompilerInfo CompilerGroup(std::vector<std::string> group, std::vector<std::string> lines, int pc)
+    CompilerInfo Lexer::CompilerGroup(std::vector<std::string> group, std::vector<std::string> lines, int pc)
     {
         CompilerInfo info = {};
         info.is_warning = false;
@@ -21,17 +21,17 @@ namespace PWMake::Lexer
             if (name == "@compiler")
             {
                 Utils::CheckParam(params, 1, lines, pc);
-                info.compiler_path = Utils::GetStringLite(params->at(0));
+                info.compiler_path = Utils::GetString(this->string_variable,params->at(0), lines, pc);
             }
             else if (name == "language_version")
             {
                 Utils::CheckParam(params, 1, lines, pc);
-                info.standard_language = Utils::GetStringLite(params->at(0));
+                info.standard_language = Utils::GetString(this->string_variable,params->at(0), lines, pc);
             }
             else if (name == "standard_library")
             {
                 Utils::CheckParam(params, 1, lines, pc);
-                info.standard_library = Utils::GetStringLite(params->at(0));
+                info.standard_library = Utils::GetString(this->string_variable,params->at(0), lines, pc);
             }
             else if (name == "compiler_warning")
             {
@@ -48,7 +48,7 @@ namespace PWMake::Lexer
             else if (name == "library_header")
             {
                 Utils::CheckParam(params, 1, lines, pc);
-                info.header.push_back(Utils::GetStringLite(params->at(0)));
+                info.header.push_back(Utils::GetString(this->string_variable,params->at(0), lines, pc));
             }
             else 
             {
@@ -61,7 +61,7 @@ namespace PWMake::Lexer
         return info;
     }
 
-    ProjectInfo ProjectGroup(std::vector<std::string> group, const std::unordered_map<std::string, std::vector<std::filesystem::path>>& dictionary, std::vector<std::string> lines, int pc)
+    ProjectInfo Lexer::ProjectGroup(std::vector<std::string> group, const std::unordered_map<std::string, std::vector<std::filesystem::path>>& dictionary, std::vector<std::string> lines, int pc)
     {
         ProjectInfo info = {};
         for (const auto& line: group)
@@ -71,13 +71,13 @@ namespace PWMake::Lexer
             if (name == "@project")
             {
                 Utils::CheckParam(params, 2, lines, pc);
-                info.project_name = Utils::GetStringLite(params->at(0));
-                info.project_type = Utils::GetStringLite(params->at(1));
+                info.project_name = Utils::GetString(this->string_variable,params->at(0), lines, pc);
+                info.project_type = Utils::GetString(this->string_variable,params->at(1), lines, pc);
             }
             else if (name == "source_files") 
             {
                 Utils::CheckParam(params, 1, lines, pc);
-                std::string files = Utils::GetStringLite(params->at(0));
+                std::string files = Utils::GetString(this->string_variable,params->at(0), lines, pc);
                 if (dictionary.find(files) != dictionary.end())
                 {
                     info.source_files = dictionary.at(files);
@@ -93,7 +93,7 @@ namespace PWMake::Lexer
             else if (name == "add_library")
             {
                 Utils::CheckParam(params, 1, lines, pc);
-                info.library.push_back(Utils::GetStringLite(params->at(0)));
+                info.library.push_back(Utils::GetString(this->string_variable,params->at(0), lines, pc));
             }
             else 
             {
