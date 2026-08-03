@@ -28,6 +28,8 @@ namespace PWMake
         bool is_extra_warning;
         bool is_debug;
         std::vector<std::string> header;
+        std::vector<std::string> links;
+        std::vector<std::string> frameworks;
     };
 
     struct ProjectInfo
@@ -36,6 +38,7 @@ namespace PWMake
         std::string project_type;
         std::vector<std::filesystem::path> source_files;
         std::vector<std::string> library;
+
     };
 }
     

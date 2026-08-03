@@ -17,7 +17,7 @@ namespace PWMake::CLI
         auto bool_variable = std::unordered_map<std::string, bool>();
         if (config_file.has_value())
         {
-            auto config = PWMake::Config::Config(config_file.value());
+            PWMake::Config::Config config = PWMake::Config::Config(config_file.value());
             string_variable = config.string_variable;
             bool_variable = config.bool_variable;
         }

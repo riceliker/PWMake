@@ -60,6 +60,16 @@ namespace PWMake::Ninja
         {
             link_flags += " -stdlib=" + info.standard_library;
         }
+
+        for (const auto& link: info.links)
+        {
+            link_flags.append(" -l" + link + " ");
+        }
+
+        for (const auto& framework: info.frameworks)
+        {
+            link_flags.append(" -framework " + framework + " ");
+        }
         
         this->data.push_back(link_flags);
         this->data.push_back("rule binary");
@@ -146,6 +156,8 @@ namespace PWMake::Ninja
         {
             links.append(" -static -static-libgcc -static-libstdc++");
         }
+
+        
 
 
         this->data.push_back(links);

@@ -7,10 +7,6 @@
 #include <unordered_map>
 #include <vector>
 
-#if defined(__unix__)
-inline std::string platform = "unix";
-#endif
-
 #if defined(__linux__)
 inline std::string platform = "linux";
 #endif

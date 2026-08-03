@@ -1,7 +1,8 @@
-# PWMake 0.1.0
+# PWMake 0.1.0 For macos bootstrap
 # ===== Compiler =====
-# Notice: You should have MSYS2/MinGW environment. The MSVC is not support.
-compiler_path = /clang64/bin/clang++.exe
+# if your clang++ or gcc compiler is other, modify it.
+# Notice: you should install libc++19-dev first.
+compiler_path = /bin/clang++
 compiler_flags = -std=c++23 -stdlib=libc++ -g -O0
 rule compile
   command = $compiler_path $compiler_flags -c $in -o $out -MD -MF $out.d
@@ -11,7 +12,7 @@ rule compile_lib
   command = $compiler_path $compiler_flags -fPIC -c $in -o $out -MD -MF $out.d
   depfile = $out.d
   deps = gcc
-link_flags = -stdlib=libc++ 
+link_flags = -stdlib=libc++
 rule binary
   command = $compiler_path $in -o $out $link_flags
 ar = ar
@@ -31,6 +32,6 @@ build $obj/pwmake/src/cli/input.o: compile src/cli/input.cpp
 build $obj/pwmake/src/cli/run.o: compile src/cli/run.cpp
 build $obj/pwmake/src/ninja/ninja.o: compile src/ninja/ninja.cpp
 build $obj/pwmake/src/main.o: compile src/main.cpp
-build $bin: binary $obj/pwmake/src/cmd/cmd.o $obj/pwmake/src/clangd/clangd.o $obj/pwmake/src/config/config.o $obj/pwmake/src/lexer/lexer.o $obj/pwmake/src/lexer/transform.o $obj/pwmake/src/cli/input.o $obj/pwmake/src/cli/run.o $obj/pwmake/src/ninja/ninja.o $obj/pwmake/src/main.o -static -static-libgcc -static-libstdc++
+build $bin: binary $obj/pwmake/src/cmd/cmd.o $obj/pwmake/src/clangd/clangd.o $obj/pwmake/src/config/config.o $obj/pwmake/src/lexer/lexer.o $obj/pwmake/src/lexer/transform.o $obj/pwmake/src/cli/input.o $obj/pwmake/src/cli/run.o $obj/pwmake/src/ninja/ninja.o $obj/pwmake/src/main.o 
 default $bin
 

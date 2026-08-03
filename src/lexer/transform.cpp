@@ -18,7 +18,11 @@ namespace PWMake::Lexer
         {
             auto [name, _params] = Utils::Function(line);
             auto params = std::move(_params);
-            if (name == "@compiler")
+            if (name[0] == '#')
+            {
+                continue;
+            }
+            else if (name == "@compiler")
             {
                 Utils::CheckParam(params, 1, lines, pc);
                 info.compiler_path = Utils::GetString(this->string_variable,params->at(0), lines, pc);
@@ -50,6 +54,16 @@ namespace PWMake::Lexer
                 Utils::CheckParam(params, 1, lines, pc);
                 info.header.push_back(Utils::GetString(this->string_variable,params->at(0), lines, pc));
             }
+            else if (name == "link")
+            {
+                Utils::CheckParam(params, 1, lines, pc);
+                info.links.push_back(Utils::GetString(this->string_variable,params->at(0), lines, pc));
+            }
+            else if (name == "framework")
+            {
+                Utils::CheckParam(params, 1, lines, pc);
+                info.frameworks.push_back(Utils::GetString(this->string_variable,params->at(0), lines, pc));
+            }
             else 
             {
                 std::printf("\033[31m" "Error:" "\033[0m" " Unknow Function Name(%s) In Compiler Group!\n", name.c_str());
@@ -68,7 +82,11 @@ namespace PWMake::Lexer
         {
             auto [name, _params] = Utils::Function(line);
             auto params = std::move(_params);
-            if (name == "@project")
+            if (name[0] == '#')
+            {
+                continue;
+            }
+            else if (name == "@project")
             {
                 Utils::CheckParam(params, 2, lines, pc);
                 info.project_name = Utils::GetString(this->string_variable,params->at(0), lines, pc);
