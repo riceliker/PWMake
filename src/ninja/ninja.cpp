@@ -66,9 +66,19 @@ namespace PWMake::Ninja
             link_flags.append(" -l" + link + " ");
         }
 
+        for (const auto& find: info.find_library)
+        {
+            link_flags.append(" -L" + find + " ");
+        }
+
         for (const auto& framework: info.frameworks)
         {
             link_flags.append(" -framework " + framework + " ");
+        }
+
+        for (const auto& link_param: info.link_params)
+        {
+            link_flags.append(" " + link_param + " ");
         }
         
         this->data.push_back(link_flags);

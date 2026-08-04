@@ -64,6 +64,21 @@ namespace PWMake::Lexer
                 Utils::CheckParam(params, 1, lines, pc);
                 info.frameworks.push_back(Utils::GetString(this->string_variable,params->at(0), lines, pc));
             }
+            else if (name == "find_library")
+            {
+                Utils::CheckParam(params, 1, lines, pc);
+                info.find_library.push_back(Utils::GetString(this->string_variable,params->at(0), lines, pc));
+            }
+            else if (name == "link_param")
+            {
+                std::string link_param = "";
+                for (const auto& param: *params)
+                { 
+                    link_param += param + ",";
+                }
+                link_param = link_param.substr(1, link_param.size()-3);
+                info.link_params.push_back(link_param);
+            }
             else 
             {
                 std::printf("\033[31m" "Error:" "\033[0m" " Unknow Function Name(%s) In Compiler Group!\n", name.c_str());

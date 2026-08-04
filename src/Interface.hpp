@@ -30,6 +30,8 @@ namespace PWMake
         std::vector<std::string> header;
         std::vector<std::string> links;
         std::vector<std::string> frameworks;
+        std::vector<std::string> find_library;
+        std::vector<std::string> link_params;
     };
 
     struct ProjectInfo
