@@ -1,5 +1,24 @@
 #include "ninja.hpp"
-#include "../utils/utils.hpp"
+
+#if defined(__linux__)
+inline std::string _platform = "linux";
+#endif
+
+#if defined(__APPLE__)
+inline std::string _platform = "macos";
+#endif
+
+#if defined(_WIN64)
+inline std::string _platform = "windows";
+#endif
+
+#if defined (__x86_64__)
+inline std::string _arch = "amd64";
+#endif
+
+#if defined (__aarch64__)
+inline std::string _arch = "arm64";
+#endif
 
 namespace PWMake::Ninja
 {
@@ -120,15 +139,15 @@ namespace PWMake::Ninja
         {
             links += " shared_library ";
             name_lib = "lib";
-            if (platform == "windows")
+            if (_platform == "windows")
             {
                 name_ext = ".dll";
             }
-            else if (platform == "macos")
+            else if (_platform == "macos")
             {
                 name_ext = ".dylib";
             }
-            else if (platform == "linux")
+            else if (_platform == "linux")
             {
                 name_ext = ".so";
             }
@@ -162,7 +181,7 @@ namespace PWMake::Ninja
             links.append(lib + " ");
         }
 
-        if (platform == "windows")
+        if (_platform == "windows")
         {
             links.append(" -static -static-libgcc -static-libstdc++");
         }

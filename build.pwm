@@ -1,7 +1,8 @@
 # PWMake 1.0
 @compiler(compiler_path)
-language_version("c++23")
-standard_library("libc++")
+  language_version("c++23")
+  standard_library("libc++")
+  compiler_debug()
 ;
 
 @files("source")
