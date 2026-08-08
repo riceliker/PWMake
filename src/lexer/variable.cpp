@@ -63,12 +63,19 @@ namespace PWMake::Lexer
             param.type = String;
             param.str = _arch;
         }
+        else if (var[0] == '$')
+        {
+            
+            param.type = String;
+            param.str = var.substr(1, var.length()-1);
+        }
         else 
         {
             std::printf("\033[31m" "Error:" "\033[0m" " The Variable Is Not Define(%s)!\n", var.c_str());
             std::printf("In build.pwm:%d\n", line);
             std::printf("%d | %s\n", line, text.c_str());
             std::exit(1);
+  
         }
         return param;
     }
@@ -100,7 +107,7 @@ namespace PWMake::Lexer
             std::string b = ParamGetString(func.params[2], 0, text, pc);
             this->variable.bool_variable.insert({key, a==b});
         }
-        if (func.name == "$print") 
+        else if (func.name == "$print") 
         {
             /*
              * $prints(msg: def<string>)

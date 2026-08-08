@@ -1,4 +1,9 @@
 # PWMake 1.0
+$bool($value, true)
+:if(value)
+  print("hello world")
+:fi
+
 @compiler(compiler_path)
   language_version("c++23")
   standard_library("libc++")
