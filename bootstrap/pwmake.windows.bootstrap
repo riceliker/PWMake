@@ -1,9 +1,19 @@
-# PWMake 0.1.0 For macos bootstrap
+# PWMake 0.1.0 For Linux/Macos bootstrap
+# Notice: The Compiler path in different device is NOT SAME. You must modify it first.
+# Do not forget modify the file name to `build.ninja`
+
+# If your clang++ compiler is not same, modify it firstly.
+# You can find the compiler by `find / -type f | grep "clang++"`
+# Notice: 
+# 0. MSVS is not support, You should install MSYS2/MinGW.
+# 1. Use `pacman -S mingw-w64-clang-x86_64-toolchain`  
+
+compiler_path = /clang64/bin/clang++.exe
+#               ^
+
+# Do not modify code under the line
 # ===== Compiler =====
-# if your clang++ or gcc compiler is other, modify it.
-# Notice: you should install libc++19-dev first.
-compiler_path = /bin/clang++
-compiler_flags = -std=c++23 -stdlib=libc++ -g -O0
+compiler_flags = -std=c++23 -stdlib=libc++
 rule compile
   command = $compiler_path $compiler_flags -c $in -o $out -MD -MF $out.d
   depfile = $out.d
@@ -12,7 +22,7 @@ rule compile_lib
   command = $compiler_path $compiler_flags -fPIC -c $in -o $out -MD -MF $out.d
   depfile = $out.d
   deps = gcc
-link_flags = -stdlib=libc++
+link_flags = -stdlib=libc++ 
 rule binary
   command = $compiler_path $in -o $out $link_flags
 ar = ar
@@ -28,10 +38,10 @@ build $obj/pwmake/src/clangd/clangd.o: compile src/clangd/clangd.cpp
 build $obj/pwmake/src/config/config.o: compile src/config/config.cpp
 build $obj/pwmake/src/lexer/lexer.o: compile src/lexer/lexer.cpp
 build $obj/pwmake/src/lexer/transform.o: compile src/lexer/transform.cpp
+build $obj/pwmake/src/lexer/variable.o: compile src/lexer/variable.cpp
 build $obj/pwmake/src/cli/input.o: compile src/cli/input.cpp
 build $obj/pwmake/src/cli/run.o: compile src/cli/run.cpp
 build $obj/pwmake/src/ninja/ninja.o: compile src/ninja/ninja.cpp
 build $obj/pwmake/src/main.o: compile src/main.cpp
-build $bin: binary $obj/pwmake/src/cmd/cmd.o $obj/pwmake/src/clangd/clangd.o $obj/pwmake/src/config/config.o $obj/pwmake/src/lexer/lexer.o $obj/pwmake/src/lexer/transform.o $obj/pwmake/src/cli/input.o $obj/pwmake/src/cli/run.o $obj/pwmake/src/ninja/ninja.o $obj/pwmake/src/main.o 
+build $bin: binary $obj/pwmake/src/cmd/cmd.o $obj/pwmake/src/clangd/clangd.o $obj/pwmake/src/config/config.o $obj/pwmake/src/lexer/lexer.o $obj/pwmake/src/lexer/transform.o $obj/pwmake/src/lexer/variable.o $obj/pwmake/src/cli/input.o $obj/pwmake/src/cli/run.o $obj/pwmake/src/ninja/ninja.o $obj/pwmake/src/main.o -static -static-libgcc -static-libstdc++
 default $bin
-

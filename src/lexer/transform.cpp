@@ -213,7 +213,7 @@ namespace PWMake::Lexer
                 { 
                     link_param += ParamGetString(func.params[i], i, text, pc) + ",";
                 }
-                link_param = link_param.substr(1, link_param.size()-3);
+                link_param.pop_back();
                 info.link_params.push_back(link_param);
             }
             else 

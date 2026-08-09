@@ -33,17 +33,25 @@ and copy it in root of program folder. Remember to rename it as `build.ninja`.
 
 ## Example
 ```pwm
-@compiler("/opt/homebrew/opt/llvm@19/bin/clang++")
+# PWMake 1.0
+$bool($value, true)
+:if(value)
+  print("hello world")
+:fi
+
+@compiler(compiler_path)
   language_version("c++23")
   standard_library("libc++")
+  compiler_debug()
+  link_param("-Wl", "-rpath", "/opt/homebrew/lib")
 ;
 
-@files("Source")
-  foreach_folder("src", ".cpp")
+@files("source")
+  recursion_folder("src", ".cpp")
 ;
 
-@project("PWMake", "binary")
-  source_files("Source")
+@project("pwmake", "binary")
+  source_files("source")
 ;
 ```
 
@@ -52,3 +60,4 @@ and copy it in root of program folder. Remember to rename it as `build.ninja`.
 2. Support branch sentence. Use if, else, fi.
 3. Support foreach and recursion file in folder.
 4. Use Group to manager you files.
+5. Use config.pwm to avoid read build file.

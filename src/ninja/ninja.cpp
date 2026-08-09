@@ -95,9 +95,11 @@ namespace PWMake::Ninja
             link_flags.append(" -framework " + framework + " ");
         }
 
+        link_flags.append(" ");
+
         for (const auto& link_param: info.link_params)
         {
-            link_flags.append(" " + link_param + " ");
+            link_flags.append(link_param + " ");
         }
         
         this->data.push_back(link_flags);
