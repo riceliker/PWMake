@@ -43,7 +43,6 @@ $bool($value, true)
   language_version("c++23")
   standard_library("libc++")
   compiler_debug()
-  link_param("-Wl", "-rpath", "/opt/homebrew/lib")
 ;
 
 @files("source")
